@@ -122,6 +122,7 @@ def registerAuth():
 	passport_country = request.form['passport_country']
 	date_of_birth = request.form['date_of_birth']
 	log_in_status = 'offline'
+	tryuse = ''
 	#cursor used to send queries
 	cursor = conn.cursor()
 	#executes query
