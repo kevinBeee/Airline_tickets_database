@@ -1,0 +1,20 @@
+<html>
+<head>
+</head>
+<body>
+<form action="/customerLoginAuth" method="POST">
+	<input type="text" name = "email" placeholder="email" required/> </br>
+	<input type="password" name = "customer_password" placeholder="password" required/></br>
+	<label></label><br>
+	<input type="submit" value = Login />
+	{% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+	{% endif %}
+</form>
+
+<a href="/">Home</a>
+
+</body>
+
+
+</html>
