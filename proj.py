@@ -122,6 +122,7 @@ def registerAuth():
 	passport_country = request.form['passport_country']
 	date_of_birth = request.form['date_of_birth']
 	log_in_status = 'offline'
+	tryuse = ''
 	#cursor used to send queries
 	cursor = conn.cursor()
 	#executes query
@@ -158,7 +159,7 @@ def registerAuth():
 		cursor.execute(ins)
 		conn.commit()
 		cursor.close()
-		return render_template('index.html')
+		return render_template('customer_home.html')
 
 
 #Define route for staff login
@@ -248,5 +249,4 @@ app.secret_key = 'some key that you will never guess'
 #debug = True -> you don't have to restart flask
 #for changes to go through, TURN OFF FOR PRODUCTION
 if __name__ == "__main__":
-	#app.run('127.0.0.1', 5000, debug = True)
-	app.run(host="0.0.0.0", port=5000)
+	app.run('127.0.0.1', 5000, debug = True)
