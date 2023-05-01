@@ -159,7 +159,7 @@ def registerAuth():
 		cursor.execute(ins)
 		conn.commit()
 		cursor.close()
-		return render_template('index.html')
+		return render_template('customer_home.html')
 
 
 #Define route for staff login
