@@ -258,7 +258,7 @@ def registerAuthStaff():
 @app.route('/customer_home')
 def customer_home():
     #return "hello customer"
-    email = session['email']
+    email = session['customer']
     return render_template('customer_home.html', email=email)
 
 @app.route('/staff_home')
@@ -288,7 +288,7 @@ def post():
 
 @app.route('/logout')
 def logout():
-	session.pop('username')
+	session.pop('customer')
 	return redirect('/')
 		
 app.secret_key = 'some key that you will never guess'
