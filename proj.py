@@ -27,7 +27,10 @@ def hello():
 #flight search
 @app.route('/flight_search')
 def flight_search():
-	return render_template('flight_search.html')
+	if (session):
+		return render_template('flight_search.html', loggedin=True)
+	else:
+		return render_template('flight_search.html', loggedin=False)
 @app.route('/search', methods=['GET', 'POST'])
 def search():
 	search_type = request.form['search_type']
@@ -286,6 +289,15 @@ def customer_home():
 def staff_home():
 	username = session['staff']
 	return render_template('staff_home.html', username=username)
+
+
+@app.route('/my_flights')
+def my_flights():
+	cursor = conn.cursor()
+	query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where email=%s"
+	cursor.execute(query, (session['customer']))
+	flights = cursor.fetchall()
+	return render_template('my_flights.html', flights = flights)
 
 
 		

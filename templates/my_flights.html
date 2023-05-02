@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+<body>
+
+<label></label><br>
+<label></label><br>
+<table>
+	<th>airline</th>
+	<th>flight number</th>
+	<th>departure date</th>
+	<th>departure_time</th>
+{% for line in flights %}
+	<tr>
+		<td>{{line['airline_name']}}</td>
+		<td>{{line['flight_number']}}</td>
+		<td>{{line['departure_date']}}</td>
+		<td>{{line['departure_time']}}</td>
+	</tr>
+{% endfor %}
+</table>
+<br><br>
+<a href="/customer_home">Back</a>
+</body>
+
+</html>
