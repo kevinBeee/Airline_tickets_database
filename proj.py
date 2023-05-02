@@ -290,6 +290,7 @@ def staff_home():
 	username = session['staff']
 	return render_template('staff_home.html', username=username)
 
+
 @app.route('/my_flights')
 def my_flights():
 	cursor = conn.cursor()
@@ -297,18 +298,6 @@ def my_flights():
 	cursor.execute(query, (session['customer']))
 	flights = cursor.fetchall()
 	return render_template('my_flights.html', flights = flights)
-
-		
-@app.route('/post', methods=['GET', 'POST'])
-def post():
-	username = session['username']
-	cursor = conn.cursor()
-	blog = request.form['blog']
-	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
-	cursor.execute(query, (blog, username))
-	conn.commit()
-	cursor.close()
-	return redirect(url_for('customer_home'))
 
 
 		
