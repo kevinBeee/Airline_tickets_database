@@ -216,7 +216,10 @@ def staff_register():
 	return render_template('staff_register.html')
 @app.route('/registerAuthStaff', methods=['GET', 'POST'])
 def registerAuthStaff():
+<<<<<<< Updated upstream
 	auth_codes = ['ABC123', 'DEF456']
+=======
+>>>>>>> Stashed changes
 	#grabs information from the forms
 	# username 	staff_password 	first_name 	last_name 	date_of_birth 	airline_name 	emails	phones
 	username = request.form['username']
@@ -225,7 +228,10 @@ def registerAuthStaff():
 	last_name = request.form['last_name']
 	date_of_birth = request.form['date_of_birth']
 	airline_name = request.form['airline_name']
+<<<<<<< Updated upstream
 	auth_code = request.form['auth_code']
+=======
+>>>>>>> Stashed changes
 	emails = request.form['emails']
 	phones = request.form['phones']
 	#cursor used to send queries
@@ -241,6 +247,7 @@ def registerAuthStaff():
 		#If the previous query returns data, then user exists
 		error = "This user already exists"
 		return render_template('staff_register.html', error = error)
+<<<<<<< Updated upstream
 	elif (auth_code not in auth_codes):
 		error = "Invalid authentication code"
 		return render_template('staff_register.html', error = error)
@@ -252,6 +259,12 @@ def registerAuthStaff():
 		ins = ins + "'" + airline_name + "')"
 		print('1 done')
 		cursor.execute(ins)
+=======
+	else:
+		#instruction to add to Airline_staff
+		ins = 'INSERT INTO Airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
+		cursor.execute(ins, (username, staff_password, first_name, last_name, date_of_birth, airline_name))
+>>>>>>> Stashed changes
 		#instruction to add to staff_phone
 		thephones = str(phones).split(',')
 		new_ins_lst = []
@@ -264,12 +277,17 @@ def registerAuthStaff():
 		theemails = str(emails).split(',')
 		new_ins_lst = []
 		for i in range(len(theemails)):
+<<<<<<< Updated upstream
 			new_ins = "INSERT INTO Staff_email VALUES('" + username + "', '" + theemails[i] + "')"
+=======
+			new_ins = "INSERT INTO Staff_email VALUES('" + username + "', " + theemails[i] + ")"
+>>>>>>> Stashed changes
 			new_ins_lst.append(new_ins)
 		for i in range(len(new_ins_lst)):
 			cursor.execute(new_ins_lst[i])
 		conn.commit()
 		cursor.close()
+<<<<<<< Updated upstream
 		session['staff'] = username
 		return redirect(url_for('staff_home'))
 
@@ -278,6 +296,9 @@ def registerAuthStaff():
 def logout_staff():
 	session.pop('staff')
 	return redirect('/')
+=======
+		return render_template('staff_home.html')
+>>>>>>> Stashed changes
 
 
 
