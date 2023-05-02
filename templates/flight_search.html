@@ -22,8 +22,11 @@
     <input type="submit" value="Search">
 </form>
  
-
+{% if request.headers.get('Referer') == 'http://127.0.0.1:5000/customer_home' %}
+<a href="/customer_home">Back</a>
+{% elif request.headers.get('Referer') == 'http://127.0.0.1:5000/' %}
 <a href="/">Home</a>
+{% endif %}
 
 </body>
 
