@@ -287,18 +287,6 @@ def staff_home():
 	username = session['staff']
 	return render_template('staff_home.html', username=username)
 
-		
-@app.route('/post', methods=['GET', 'POST'])
-def post():
-	username = session['username']
-	cursor = conn.cursor()
-	blog = request.form['blog']
-	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
-	cursor.execute(query, (blog, username))
-	conn.commit()
-	cursor.close()
-	return redirect(url_for('customer_home'))
-
 
 		
 app.secret_key = 'some key that you will never guess'
