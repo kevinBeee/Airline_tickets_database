@@ -1,7 +1,8 @@
 <html>
 <head>
 </head>
-<body>    
+<body> 
+<label>Departure Flights: </label>   
 <table>
 	<th>airline</th>
 	<th>flight number</th>
@@ -18,8 +19,11 @@
 	</tr>
 {% endfor %}
 </table>
+<br><br>
 
 {% if returns %}
+<label>Return Flights: </label>
+<table>
 <th>airline</th>
 <th>flight number</th>
 <th>departure date</th>

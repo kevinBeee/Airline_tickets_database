@@ -21,41 +21,7 @@
     <br><br>
     <input type="submit" value="Search">
 </form>
-    
-<table>
-	<th>airline</th>
-	<th>flight number</th>
-	<th>departure date</th>
-	<th>arrival date</th>
-	<th>flight status</th>
-{% for line in departs %}
-	<tr>
-		<td>{{line['airline_name']}}</td>
-		<td>{{line['flight_number']}}</td>
-		<td>{{line['departure_date']}}</td>
-		<td>{{line['arrival_date']}}</td>
-		<td>{{line['flight_status']}}</td>
-	</tr>
-{% endfor %}
-</table>
-
-{% if return_date %}
-<th>airline</th>
-<th>flight number</th>
-<th>departure date</th>
-<th>arrival date</th>
-<th>flight status</th>
-{% for line in returns %}
-<tr>
-    <td>{{line['airline_name']}}</td>
-    <td>{{line['flight_number']}}</td>
-    <td>{{line['departure_date']}}</td>
-    <td>{{line['arrival_date']}}</td>
-    <td>{{line['flight_status']}}</td>
-</tr>
-{% endfor %}
-</table>
-{% endif %}
+ 
 
 <a href="/">Home</a>
 

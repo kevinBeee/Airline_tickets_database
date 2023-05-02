@@ -280,11 +280,6 @@ def post():
 def logout():
 	session.pop('customer')
 	return redirect('/')
-
-@app.route('/logout_staff')
-def logout_staff():
-	session.pop('staff')
-	return redirect('/')
 		
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
