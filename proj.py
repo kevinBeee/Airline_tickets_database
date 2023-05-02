@@ -301,36 +301,84 @@ def logout_staff():
 >>>>>>> Stashed changes
 
 
+
+
+
+#customer home
 @app.route('/customer_home')
 def customer_home():
     email = session['customer']
     return render_template('customer_home.html', email=email)
 
+@app.route('/my_flights')
+def my_flights():
+	cursor = conn.cursor()
+	query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time > NOW()) or (departure_date > NOW())) and email=%s"
+	cursor.execute(query, (session['customer']))
+	flights = cursor.fetchall()
+	conn.commit()
+	cursor.close()
+	return render_template('my_flights.html', flights = flights)
+
+@app.route('/update_my_flights', methods=['GET', 'POST'])
+def update_my_flights():
+	cursor = conn.cursor()
+	option = request.form['dropdown']
+	if (option == 'future'):
+		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time > NOW()) or (departure_date > NOW())) and email=%s"
+	elif (option == 'past'):
+		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time < NOW()) or (departure_date < NOW())) and email=%s"
+	else:
+		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where email=%s"
+	cursor.execute(query, (session['customer']))
+	flights = cursor.fetchall()
+  conn.commit()
+	cursor.close()
+	return render_template('my_flights.html', flights = flights)
+
+
+
+
+#staff_home
 @app.route('/staff_home')
 def staff_home():
 	username = session['staff']
 	return render_template('staff_home.html', username=username)
 
-@app.route('/my_flights')
-def my_flights():
+#add airplane
+@app.route('/add_airplane')
+def add_airplane():
+	return render_template('add_airplane.html')
+@app.route('/add_airplaneAuth', methods=['GET', 'POST'])
+def add_airplaneAuth():
+	#data from form
+	id = request.form['id']
+	seats = request.form['seats']
+	manufacturer = request.form['manufacturer']
+	manufacturing_date = request.form['manufacturing_date']
+	#get airline name
+	username = session['staff']
 	cursor = conn.cursor()
-	query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where email=%s"
-	cursor.execute(query, (session['customer']))
-	flights = cursor.fetchall()
-	return render_template('my_flights.html', flights = flights)
-
-		
-@app.route('/post', methods=['GET', 'POST'])
-def post():
-	username = session['username']
-	cursor = conn.cursor()
-	blog = request.form['blog']
-	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
-	cursor.execute(query, (blog, username))
-	conn.commit()
-	cursor.close()
-	return redirect(url_for('customer_home'))
-
+	query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
+	cursor.execute(query, (username))
+	airline_name = cursor.fetchall()[0]['airline_name']
+	#check if airplane already exists
+	query = "SELECT * FROM Airplane WHERE id = %s"
+	cursor.execute(query, (id))
+	data = cursor.fetchone()
+	#use fetchall() if you are expecting more than 1 data row
+	error = None
+	if(data):
+		error = "This airplane already exists"
+		return render_template('add_airplane.html', error = error)
+	else:
+		#add airplane
+		ins = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, null, %s)"
+		print(ins, (id, seats, manufacturer, manufacturing_date, airline_name))
+		cursor.execute(ins, (id, seats, manufacturer, manufacturing_date, airline_name))
+		conn.commit()
+		cursor.close()
+		return redirect(url_for('staff_home'))
 
 		
 app.secret_key = 'some key that you will never guess'
