@@ -264,6 +264,11 @@ def customer_home():
 def staff_home():
 	return 0
 
+@app.route('/my_flights')
+def my_flights():
+	
+	return
+
 		
 @app.route('/post', methods=['GET', 'POST'])
 def post():
