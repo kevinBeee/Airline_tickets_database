@@ -280,16 +280,14 @@ def logout_staff():
 	return redirect('/')
 
 
+
+
+
+#customer home
 @app.route('/customer_home')
 def customer_home():
     email = session['customer']
     return render_template('customer_home.html', email=email)
-
-@app.route('/staff_home')
-def staff_home():
-	username = session['staff']
-	return render_template('staff_home.html', username=username)
-
 
 @app.route('/my_flights')
 def my_flights():
@@ -299,6 +297,27 @@ def my_flights():
 	flights = cursor.fetchall()
 	return render_template('my_flights.html', flights = flights)
 
+
+
+
+
+#staff_home
+@app.route('/staff_home')
+def staff_home():
+	username = session['staff']
+	return render_template('staff_home.html', username=username)
+
+#add airplane
+@app.route('/post', methods=['GET', 'POST'])
+def post():
+	username = session['username']
+	cursor = conn.cursor()
+	blog = request.form['blog']
+	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
+	cursor.execute(query, (blog, username))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('home'))
 
 		
 app.secret_key = 'some key that you will never guess'
