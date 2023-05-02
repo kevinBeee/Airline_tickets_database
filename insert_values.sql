@@ -29,6 +29,7 @@ insert into Flight values(903, 150, '2023-04-03', '21:16', '2023-04-03', '23:25'
 insert into Flight values(1374, 200, '2023-04-03', '13:40', '2023-04-03', '17:27', 'on time', 150, 'N986JB', 'Jet Blue', 'JFK', 'SIN');
 insert into Flight values(1374, 200, '2023-05-03', '13:40', '2023-05-03', '17:30', 'on time', 190, 'N986JB', 'Jet Blue', 'JFK', 'SIN');
 insert into Flight values(1374, 200, '2023-06-03', '13:40', '2023-06-03', '17:30', 'on time', 100, 'N986JB', 'Jet Blue', 'JFK', 'SIN');
+INSERT INTO Flight values(1374, 200, '2023-04-03', '18:40', '2023-04-03', '23:27', 'on time',150,'N986JB', 'Jet Blue', 'SIN','JFK'); 
 #past ticket
 insert into Ticket values(1001, 'Kevin', 'Zhou', '2002-05-09', 200, 'debit', 12345, 'Kevin Zhou', '2026-10-01', '2023-04-01', '10:00', 1374, '2023-04-03', '13:40', 'Jet Blue');
 insert into Ticket values(1002, 'Hello', 'World', '2002-05-10', 200, 'debit', 12345, 'Kevin Zhou', '2026-10-01', '2023-04-01', '10:00', 1374, '2023-04-03', '13:40', 'Jet Blue');
