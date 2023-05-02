@@ -292,13 +292,28 @@ def customer_home():
 @app.route('/my_flights')
 def my_flights():
 	cursor = conn.cursor()
-	query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where email=%s"
+	query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time > NOW()) or (departure_date > NOW())) and email=%s"
 	cursor.execute(query, (session['customer']))
 	flights = cursor.fetchall()
 	conn.commit()
 	cursor.close()
 	return render_template('my_flights.html', flights = flights)
 
+@app.route('/update_my_flights', methods=['GET', 'POST'])
+def update_my_flights():
+	cursor = conn.cursor()
+	option = request.form['dropdown']
+	if (option == 'future'):
+		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time > NOW()) or (departure_date > NOW())) and email=%s"
+	elif (option == 'past'):
+		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time < NOW()) or (departure_date < NOW())) and email=%s"
+	else:
+		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where email=%s"
+	cursor.execute(query, (session['customer']))
+	flights = cursor.fetchall()
+  conn.commit()
+	cursor.close()
+	return render_template('my_flights.html', flights = flights)
 
 
 
