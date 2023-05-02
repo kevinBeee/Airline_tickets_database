@@ -295,6 +295,8 @@ def my_flights():
 	query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where email=%s"
 	cursor.execute(query, (session['customer']))
 	flights = cursor.fetchall()
+	conn.commit()
+	cursor.close()
 	return render_template('my_flights.html', flights = flights)
 
 
@@ -308,16 +310,39 @@ def staff_home():
 	return render_template('staff_home.html', username=username)
 
 #add airplane
-@app.route('/post', methods=['GET', 'POST'])
-def post():
-	username = session['username']
+@app.route('/add_airplane')
+def add_airplane():
+	return render_template('add_airplane.html')
+@app.route('/add_airplaneAuth', methods=['GET', 'POST'])
+def add_airplaneAuth():
+	#data from form
+	id = request.form['id']
+	seats = request.form['seats']
+	manufacturer = request.form['manufacturer']
+	manufacturing_date = request.form['manufacturing_date']
+	#get airline name
+	username = session['staff']
 	cursor = conn.cursor()
-	blog = request.form['blog']
-	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
-	cursor.execute(query, (blog, username))
-	conn.commit()
-	cursor.close()
-	return redirect(url_for('home'))
+	query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
+	cursor.execute(query, (username))
+	airline_name = cursor.fetchall()[0]['airline_name']
+	#check if airplane already exists
+	query = "SELECT * FROM Airplane WHERE id = %s"
+	cursor.execute(query, (id))
+	data = cursor.fetchone()
+	#use fetchall() if you are expecting more than 1 data row
+	error = None
+	if(data):
+		error = "This airplane already exists"
+		return render_template('add_airplane.html', error = error)
+	else:
+		#add airplane
+		ins = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, null, %s)"
+		print(ins, (id, seats, manufacturer, manufacturing_date, airline_name))
+		cursor.execute(ins, (id, seats, manufacturer, manufacturing_date, airline_name))
+		conn.commit()
+		cursor.close()
+		return redirect(url_for('staff_home'))
 
 		
 app.secret_key = 'some key that you will never guess'
