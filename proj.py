@@ -112,6 +112,7 @@ def registerAuth():
 	customer_password = request.form['customer_password']
 	first_name = request.form['first_name']
 	last_name = request.form['last_name']
+	phone_number = request.form['phone_number']
 	building_name = request.form['building_name']
 	street_name = request.form['street_name']
 	apt_number = request.form['apt_number']
@@ -121,8 +122,7 @@ def registerAuth():
 	passport_number = request.form['passport_number']
 	passport_country = request.form['passport_country']
 	date_of_birth = request.form['date_of_birth']
-	log_in_status = 'offline'
-	tryuse = ''
+	log_in_status = 'online'
 	#cursor used to send queries
 	cursor = conn.cursor()
 	#executes query
@@ -137,6 +137,7 @@ def registerAuth():
 		error = "This user already exists"
 		return render_template('customer_register.html', error = error)
 	else:
+		#instruction to add to customer
 		ins = "INSERT INTO Customer VALUES("
 		for each in [email, customer_password, first_name, last_name]:
 			ins = ins + "'" + each + "', "
@@ -156,13 +157,21 @@ def registerAuth():
 			else:
 				ins = ins + "'" + str(each) + "', "
 		ins = ins + "'" + str(log_in_status) + "')"
+		#instruction to add to customer_phone
+		phones = str(phone_number).split(',')
+		new_ins_lst = []
+		for i in range(len(phones)):
+			new_ins = "INSERT INTO Customer_phone VALUES('" + email + "', " + phones[i] + ")"
+			new_ins_lst.append(new_ins)
 		cursor.execute(ins)
+		for i in range(len(new_ins_lst)):
+			cursor.execute(new_ins_lst[i])
 		conn.commit()
 		cursor.close()
 		return render_template('customer_home.html')
 
 
-#Define route for staff login
+#staff login
 @app.route('/staff_login')
 def staff_login():
 	return render_template('staff_login.html')
@@ -192,13 +201,58 @@ def staffLoginAuth():
 		return render_template('staff_login.html', error=error)
 
 
-#Define route for staff register
+#staff register
 @app.route('/staff_register')
 def staff_register():
 	return render_template('staff_register.html')
-
-
-#Authenticates the staff login
+@app.route('/registerAuthStaff', methods=['GET', 'POST'])
+def registerAuthStaff():
+	#grabs information from the forms
+	# username 	staff_password 	first_name 	last_name 	date_of_birth 	airline_name 	emails	phones
+	username = request.form['username']
+	staff_password = request.form['staff_password']
+	first_name = request.form['first_name']
+	last_name = request.form['last_name']
+	date_of_birth = request.form['date_of_birth']
+	airline_name = request.form['airline_name']
+	emails = request.form['emails']
+	phones = request.form['phones']
+	#cursor used to send queries
+	cursor = conn.cursor()
+	#executes query
+	query = 'SELECT * FROM Airline_staff WHERE username = %s'
+	cursor.execute(query, (username))
+	#stores the results in a variable
+	data = cursor.fetchone()
+	#use fetchall() if you are expecting more than 1 data row
+	error = None
+	if(data):
+		#If the previous query returns data, then user exists
+		error = "This user already exists"
+		return render_template('staff_register.html', error = error)
+	else:
+		#instruction to add to Airline_staff
+		ins = 'INSERT INTO Airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
+		cursor.execute(ins, (username, staff_password, first_name, last_name, date_of_birth, airline_name))
+		#instruction to add to staff_phone
+		thephones = str(phones).split(',')
+		new_ins_lst = []
+		for i in range(len(thephones)):
+			new_ins = "INSERT INTO Staff_phone VALUES('" + username + "', " + thephones[i] + ")"
+			new_ins_lst.append(new_ins)
+		for i in range(len(new_ins_lst)):
+			cursor.execute(new_ins_lst[i])
+		#instruction to add to staff_email
+		theemails = str(emails).split(',')
+		new_ins_lst = []
+		for i in range(len(theemails)):
+			new_ins = "INSERT INTO Staff_email VALUES('" + username + "', " + theemails[i] + ")"
+			new_ins_lst.append(new_ins)
+		for i in range(len(new_ins_lst)):
+			cursor.execute(new_ins_lst[i])
+		conn.commit()
+		cursor.close()
+		return render_template('staff_home.html')
 
 
 @app.route('/customer_home')
@@ -231,7 +285,7 @@ def staff_home():
 @app.route('/post', methods=['GET', 'POST'])
 def post():
 	username = session['username']
-	cursor = conn.cursor()
+	cursor = conn.cursor();
 	blog = request.form['blog']
 	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
 	cursor.execute(query, (blog, username))
