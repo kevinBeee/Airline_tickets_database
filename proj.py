@@ -112,7 +112,6 @@ def registerAuth():
 	customer_password = request.form['customer_password']
 	first_name = request.form['first_name']
 	last_name = request.form['last_name']
-	phone_number = request.form['phone_number']
 	building_name = request.form['building_name']
 	street_name = request.form['street_name']
 	apt_number = request.form['apt_number']
@@ -122,7 +121,8 @@ def registerAuth():
 	passport_number = request.form['passport_number']
 	passport_country = request.form['passport_country']
 	date_of_birth = request.form['date_of_birth']
-	log_in_status = 'online'
+	log_in_status = 'offline'
+	tryuse = ''
 	#cursor used to send queries
 	cursor = conn.cursor()
 	#executes query
@@ -137,7 +137,6 @@ def registerAuth():
 		error = "This user already exists"
 		return render_template('customer_register.html', error = error)
 	else:
-		#instruction to add to customer
 		ins = "INSERT INTO Customer VALUES("
 		for each in [email, customer_password, first_name, last_name]:
 			ins = ins + "'" + each + "', "
@@ -157,15 +156,7 @@ def registerAuth():
 			else:
 				ins = ins + "'" + str(each) + "', "
 		ins = ins + "'" + str(log_in_status) + "')"
-		#instruction to add to customer_phone
-		phones = str(phone_number).split(',')
-		new_ins_lst = []
-		for i in range(len(phones)):
-			new_ins = "INSERT INTO Customer_phone VALUES('" + email + "', " + phones[i] + ")"
-			new_ins_lst.append(new_ins)
 		cursor.execute(ins)
-		for i in range(len(new_ins_lst)):
-			cursor.execute(new_ins_lst[i])
 		conn.commit()
 		cursor.close()
 		return render_template('customer_home.html')
@@ -240,7 +231,7 @@ def staff_home():
 @app.route('/post', methods=['GET', 'POST'])
 def post():
 	username = session['username']
-	cursor = conn.cursor();
+	cursor = conn.cursor()
 	blog = request.form['blog']
 	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
 	cursor.execute(query, (blog, username))
