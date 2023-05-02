@@ -170,6 +170,11 @@ def registerAuth():
 		cursor.close()
 		session['customer'] = email
 		return redirect(url_for('customer_home'))
+#customer logout
+@app.route('/logout')
+def logout():
+	session.pop('customer')
+	return redirect('/')
 
 
 #staff login
@@ -265,6 +270,12 @@ def registerAuthStaff():
 		session['staff'] = username
 		return redirect(url_for('staff_home'))
 
+#staff logout
+@app.route('/logout_staff')
+def logout_staff():
+	session.pop('staff')
+	return redirect('/')
+
 
 @app.route('/customer_home')
 def customer_home():
@@ -288,10 +299,7 @@ def post():
 	cursor.close()
 	return redirect(url_for('customer_home'))
 
-@app.route('/logout')
-def logout():
-	session.pop('customer')
-	return redirect('/')
+
 		
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
