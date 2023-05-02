@@ -168,7 +168,8 @@ def registerAuth():
 			cursor.execute(new_ins_lst[i])
 		conn.commit()
 		cursor.close()
-		return render_template('customer_home.html')
+		session['customer'] = email
+		return redirect(url_for('customer_home'))
 
 
 #staff login
@@ -207,6 +208,7 @@ def staff_register():
 	return render_template('staff_register.html')
 @app.route('/registerAuthStaff', methods=['GET', 'POST'])
 def registerAuthStaff():
+	auth_codes = ['ABC123', 'DEF456']
 	#grabs information from the forms
 	# username 	staff_password 	first_name 	last_name 	date_of_birth 	airline_name 	emails	phones
 	username = request.form['username']
@@ -215,6 +217,7 @@ def registerAuthStaff():
 	last_name = request.form['last_name']
 	date_of_birth = request.form['date_of_birth']
 	airline_name = request.form['airline_name']
+	auth_code = request.form['auth_code']
 	emails = request.form['emails']
 	phones = request.form['phones']
 	#cursor used to send queries
@@ -230,10 +233,17 @@ def registerAuthStaff():
 		#If the previous query returns data, then user exists
 		error = "This user already exists"
 		return render_template('staff_register.html', error = error)
+	elif (auth_code not in auth_codes):
+		error = "Invalid authentication code"
+		return render_template('staff_register.html', error = error)
 	else:
-		#instruction to add to Airline_staff
-		ins = 'INSERT INTO Airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
-		cursor.execute(ins, (username, staff_password, first_name, last_name, date_of_birth, airline_name))
+		#executes query
+		ins = "INSERT INTO Airline_staff VALUES("
+		for each in [username, staff_password, first_name, last_name, date_of_birth]:
+			ins = ins + "'" + each + "', "
+		ins = ins + "'" + airline_name + "')"
+		print('1 done')
+		cursor.execute(ins)
 		#instruction to add to staff_phone
 		thephones = str(phones).split(',')
 		new_ins_lst = []
@@ -246,13 +256,14 @@ def registerAuthStaff():
 		theemails = str(emails).split(',')
 		new_ins_lst = []
 		for i in range(len(theemails)):
-			new_ins = "INSERT INTO Staff_email VALUES('" + username + "', " + theemails[i] + ")"
+			new_ins = "INSERT INTO Staff_email VALUES('" + username + "', '" + theemails[i] + "')"
 			new_ins_lst.append(new_ins)
 		for i in range(len(new_ins_lst)):
 			cursor.execute(new_ins_lst[i])
 		conn.commit()
 		cursor.close()
-		return render_template('staff_home.html')
+		session['staff'] = username
+		return redirect(url_for('staff_home'))
 
 
 @app.route('/customer_home')
@@ -262,13 +273,14 @@ def customer_home():
 
 @app.route('/staff_home')
 def staff_home():
-	return 0
+	username = session['staff']
+	return render_template('staff_home.html', username=username)
 
 		
 @app.route('/post', methods=['GET', 'POST'])
 def post():
 	username = session['username']
-	cursor = conn.cursor();
+	cursor = conn.cursor()
 	blog = request.form['blog']
 	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
 	cursor.execute(query, (blog, username))
