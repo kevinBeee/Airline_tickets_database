@@ -286,18 +286,24 @@ def logout_staff():
 #customer home
 @app.route('/customer_home')
 def customer_home():
-    email = session['customer']
-    return render_template('customer_home.html', email=email)
+	if ('customer' in session.keys()):
+		email = session['customer']
+		return render_template('customer_home.html', email=email)
+	else:
+		return redirect('/')
 
 @app.route('/my_flights')
 def my_flights():
-	cursor = conn.cursor()
-	query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time > NOW()) or (departure_date > NOW())) and email=%s"
-	cursor.execute(query, (session['customer']))
-	flights = cursor.fetchall()
-	conn.commit()
-	cursor.close()
-	return render_template('my_flights.html', flights = flights)
+	if ('customer' not in session.keys()):
+		return redirect('/')
+	else:
+		cursor = conn.cursor()
+		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time > NOW()) or (departure_date > NOW())) and email=%s"
+		cursor.execute(query, (session['customer']))
+		flights = cursor.fetchall()
+		conn.commit()
+		cursor.close()
+		return render_template('my_flights.html', flights = flights)
 
 @app.route('/update_my_flights', methods=['GET', 'POST'])
 def update_my_flights():
@@ -321,13 +327,19 @@ def update_my_flights():
 #staff_home
 @app.route('/staff_home')
 def staff_home():
-	username = session['staff']
-	return render_template('staff_home.html', username=username)
+	if ('staff' in session.keys()):
+		username = session['staff']
+		return render_template('staff_home.html', username=username)
+	else:
+		return redirect('/')
 
 #add airplane
 @app.route('/add_airplane')
 def add_airplane():
-	return render_template('add_airplane.html')
+	if ('staff' in session.keys()):
+		return render_template('add_airplane.html')
+	else:
+		return redirect('/')
 @app.route('/add_airplaneAuth', methods=['GET', 'POST'])
 def add_airplaneAuth():
 	#data from form
