@@ -341,6 +341,29 @@ def staff_home():
 	else:
 		return redirect('/')
 
+@app.route('/view_flights_staff')
+def view_flights_staff():
+	if ('staff' in session.keys()):
+		#get airline name
+		username = session['staff']
+		cursor = conn.cursor()
+		query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
+		cursor.execute(query, (username))
+		airline_name = cursor.fetchall()[0]['airline_name']
+		conn.commit()
+		cursor.close()
+		#get flights
+		cursor = conn.cursor()
+		query = "SELECT * FROM Flight WHERE airline_name=%s"
+		cursor.execute(query, (airline_name))
+		flights = cursor.fetchall()
+		conn.commit()
+		cursor.close()
+		print(flights)
+		return render_template('view_flights_staff.html', flights=flights)
+	else:
+		return redirect('/')
+
 #add airplane
 @app.route('/add_airplane')
 def add_airplane():
@@ -516,8 +539,7 @@ def change_flight_statusAuth():
 	cursor.execute(ins, (flight_status, flight_number, departure_date, departure_time, airline_name))
 	conn.commit()
 	cursor.close()
-	return render_template('change_flight_status.html', message="Flight status changed successfully")
-
+	return view_flights_staff()
 
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
