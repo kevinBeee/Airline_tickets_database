@@ -386,6 +386,8 @@ def purchase():
 
 
 
+
+
 #staff_home
 @app.route('/staff_home')
 def staff_home():
@@ -408,12 +410,12 @@ def view_flights_staff():
 		cursor.close()
 		#get flights
 		cursor = conn.cursor()
-		query = "SELECT * FROM Flight WHERE airline_name=%s"
+		query = "SELECT * FROM Flight WHERE airline_name=%s and (departure_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY))"
 		cursor.execute(query, (airline_name))
 		flights = cursor.fetchall()
 		conn.commit()
 		cursor.close()
-		print(flights)
+		#print(flights)
 		return render_template('view_flights_staff.html', flights=flights)
 	else:
 		return redirect('/')
