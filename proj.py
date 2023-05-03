@@ -356,7 +356,7 @@ def view_flights_staff():
 		cursor.close()
 		#get flights
 		cursor = conn.cursor()
-		query = "SELECT * FROM Flight WHERE airline_name=%s"
+		query = "SELECT * FROM Flight WHERE airline_name=%s and (departure_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY))"
 		cursor.execute(query, (airline_name))
 		flights = cursor.fetchall()
 		conn.commit()
