@@ -7,16 +7,28 @@
 	<th>airline</th>
 	<th>flight number</th>
 	<th>departure date</th>
+	<th>departure time</th>
 	<th>arrival date</th>
+	<th>arrival time</th>
 	<th>flight status</th>
 {% for line in departs %}
 	<tr>
 		<td>{{line['airline_name']}}</td>
 		<td>{{line['flight_number']}}</td>
 		<td>{{line['departure_date']}}</td>
+		<td>{{line['departure_time']}}</td>
 		<td>{{line['arrival_date']}}</td>
+		<td>{{line['arrival_time']}}</td>
 		<td>{{line['flight_status']}}</td>
-		<td><a href="/ticket_purchase">Purchase</a></td>
+		<td>
+			<form method="post" action="/ticket_purchase">
+				<input type="hidden" name="airline_name" value="{{line['airline_name']}}">
+				<input type="hidden" name="flight_number" value="{{line['flight_number']}}">
+				<input type="hidden" name="departure_date" value="{{line['departure_date']}}">
+				<input type="hidden" name="departure_time" value="{{line['departure_time']}}">
+				<button type="submit">Purchase</button>
+		  	</form>
+		</td>
 	</tr>
 {% endfor %}
 </table>

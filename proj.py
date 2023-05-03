@@ -46,24 +46,24 @@ def search():
 	cursor = conn.cursor()
 	if (search_type == 'city'):
 		if (return_date):
-			query = 'SELECT airline_name, flight_number, departure_date, arrival_date, flight_status FROM Flight where departure_airport in (select airport_code from Airport where city=%s) and arrival_airport in (select airport_code from Airport where city=%s) and departure_date=%s'
+			query = 'SELECT airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, flight_status FROM Flight where departure_airport in (select airport_code from Airport where city=%s) and arrival_airport in (select airport_code from Airport where city=%s) and departure_date=%s'
 			cursor.execute(query, (source_city, destination_city, depart_date))
 			depart_flights = cursor.fetchall()
 			cursor.execute(query, (destination_city, source_city, return_date))
 			return_flights = cursor.fetchall()
 		else:
-			query = 'SELECT airline_name, flight_number, departure_date, arrival_date, flight_status FROM Flight where departure_airport in (select airport_code from Airport where city=%s) and arrival_airport in (select airport_code from Airport where city=%s) and departure_date=%s'
+			query = 'SELECT airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, flight_status FROM Flight where departure_airport in (select airport_code from Airport where city=%s) and arrival_airport in (select airport_code from Airport where city=%s) and departure_date=%s'
 			cursor.execute(query, (source_city, destination_city, depart_date))
 			depart_flights = cursor.fetchall()
 	else:
 		if (return_date):
-			query = 'SELECT airline_name, flight_number, departure_date, arrival_date, flight_status FROM Flight where departure_airport=%s and arrival_airport=%s and departure_date=%s'
+			query = 'SELECT airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, flight_status FROM Flight where departure_airport=%s and arrival_airport=%s and departure_date=%s'
 			cursor.execute(query, (source_airport, destination_airport, depart_date))
 			depart_flights = cursor.fetchall()
 			cursor.execute(query, (destination_airport, source_airport, return_date))
 			return_flights = cursor.fetchall()
 		else:
-			query = 'SELECT airline_name, flight_number, departure_date, arrival_date, flight_status FROM Flight where departure_airport=%s and arrival_airport=%s and departure_date=%s'
+			query = 'SELECT airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, flight_status FROM Flight where departure_airport=%s and arrival_airport=%s and departure_date=%s'
 			cursor.execute(query, (source_airport, destination_airport, depart_date))
 			depart_flights = cursor.fetchall()
 	cursor.close()
@@ -307,6 +307,8 @@ def my_flights():
 		return render_template('my_flights.html', flights = flights)
 @app.route('/update_my_flights', methods=['GET', 'POST'])
 def update_my_flights():
+	if ('customer' not in session.keys()):
+		return redirect('/')
 	cursor = conn.cursor()
 	option = request.form['dropdown']
 	if (option == 'future'):
