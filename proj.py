@@ -361,7 +361,10 @@ def add_airplaneAuth():
 	query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
 	cursor.execute(query, (username))
 	airline_name = cursor.fetchall()[0]['airline_name']
+	conn.commit()
+	cursor.close()
 	#check if airplane already exists
+	cursor = conn.cursor()
 	query = "SELECT * FROM Airplane WHERE id = %s"
 	cursor.execute(query, (id))
 	data = cursor.fetchone()
@@ -376,7 +379,26 @@ def add_airplaneAuth():
 		cursor.execute(ins, (id, seats, manufacturer, manufacturing_date, airline_name))
 		conn.commit()
 		cursor.close()
-		return redirect(url_for('view_airplanes'))
+		return view_airplanes()
+@app.route('/view_airplanes')
+def view_airplanes():
+	if ('staff' in session.keys()):
+		username = session['staff']
+		cursor = conn.cursor()
+		query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
+		cursor.execute(query, (username))		
+		airline_name = cursor.fetchall()[0]['airline_name']
+		conn.commit()
+		cursor.close()
+		cursor = conn.cursor()
+		query = "SELECT id FROM Airplane WHERE airline_name=%s"
+		cursor.execute(query, (airline_name))
+		airplanes = cursor.fetchall()
+		conn.commit()
+		cursor.close()
+		return render_template('view_airplanes.html', airplanes=airplanes)
+	else:
+		return redirect('/')
 
 #add airport
 @app.route('/add_airport')
