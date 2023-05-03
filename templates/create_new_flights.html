@@ -2,6 +2,7 @@
 <head>
 </head>
 <body>
+    <label>Create new flights:</label><br><br>
 <form action="/create_new_flightsAuth" method="POST">
     <label for="flight_number">Flight number:</label><br>
     <input type="number" name = "flight_number" placeholder="required" required/> </br>
@@ -9,9 +10,9 @@
     <input type="number" name = "base_price" placeholder="required" required/> </br>
     <label for="departure_airport">Departure aiport code:</label><br>
     <input type="text" name = "departure_airport" placeholder="required" required/> </br>
-    <label for="departure_date">Departure date:</label><br>
+    <label for="departure_date">Departure date: (e.g. 2001-01-01)</label><br>
     <input type="text" name = "departure_date" placeholder="required" required/> </br>
-    <label for="departure_time">Departure time:</label><br>
+    <label for="departure_time">Departure time: (e.g. 10:00 or 10:00:00)</label><br>
     <input type="text" name = "departure_time" placeholder="required" required/> </br>
     <label for="arrival_airport">Arrival airport code:</label><br>
     <input type="text" name = "arrival_airport" placeholder="required" required/> </br>

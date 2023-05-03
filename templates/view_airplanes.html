@@ -2,15 +2,16 @@
 <head>
 </head>
 <body>
-<label>Airplanes in your airline: </label><br>
+<label>Airplanes in your airline: </label><br><br>
 <table>
     <th>Airplane ID</th>
 {% for line in airplanes %}
     <tr>
-        <td>{{line['airplane_id']}}</td>
+        <td>{{line['id']}}</td>
     </tr>
 {% endfor %}
 </table>
+<br><br>
 <a href="/staff_home">Staff Home</a>
 </body>
 </html>
