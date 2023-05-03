@@ -38,8 +38,8 @@ INSERT INTO Flight values(1374, 200, '2023-04-03', '18:40', '2023-04-03', '23:27
 insert into Ticket values(1001, 'Kevin', 'Zhou', '2002-05-09', 200, 'debit', 12345, 'Kevin Zhou', '2026-10-01', '2023-04-01', '10:00', 1374, '2023-04-03', '13:40', 'Jet Blue');
 insert into Ticket values(1002, 'Hello', 'World', '2002-05-10', 200, 'debit', 12345, 'Kevin Zhou', '2026-10-01', '2023-04-01', '10:00', 1374, '2023-04-03', '13:40', 'Jet Blue');
 #future tickets
-insert into Ticket values(2001, 'Junwen', 'Zhong', '2001-08-08', 200, 'credit', 23456, 'Junwen Zhong', '2027-11-01', '2023-04-02', '11:00', 1374, '2023-05-03', '13:40', 'Jet Blue');
-insert into Ticket values(3001, 'Yiling', 'Ding', '2002-05-17', 200, 'credit', 34567, 'Yiling Ding', '2025-10-01', '2023-04-03', '12:00', 1374, '2023-06-03', '13:40', 'Jet Blue');
+insert into Ticket values(1003, 'Junwen', 'Zhong', '2001-08-08', 200, 'credit', 23456, 'Junwen Zhong', '2027-11-01', '2023-04-02', '11:00', 1374, '2023-05-03', '13:40', 'Jet Blue');
+insert into Ticket values(1004, 'Yiling', 'Ding', '2002-05-17', 200, 'credit', 34567, 'Yiling Ding', '2025-10-01', '2023-04-03', '12:00', 1374, '2023-06-03', '13:40', 'Jet Blue');
 
 insert into Purchase values ('yz6878@nyu.edu', 1001, 9, 'good');
 insert into Purchase values ('yz6878@nyu.edu', 1002, null, null);

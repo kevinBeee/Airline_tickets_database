@@ -329,7 +329,7 @@ def ticket_purchase():
 	if ('customer' not in session.keys()):
 		return redirect('/customer_login')
 	return render_template('ticket_purchase.html')
-
+@app.route('/purchase')
 
 
 #staff_home

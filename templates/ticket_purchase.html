@@ -5,17 +5,30 @@
     <form action="/registerAuth" method="POST">
         <label for="first_name">First name:</label><br>
         <input type="text" name = "first_name" placeholder="required" required/> </br>
-        <label for="last_name">Last_name:</label><br>
+        <label for="last_name">Last name:</label><br>
         <input type="text" name = "last_name" placeholder="required" required/> </br>
         <label for="date_of_birth">Date of birth: (e.g. 2001-01-01)</label><br>
         <input type="text" name = "date_of_birth"/> </br>
-        
+        <br>
+        <label>Card type:</label>
+        <input type="radio" name="card_type" value="credit" checked>Credit
+        <input type="radio" name="card_type" value="debit">Debit
+        <br>
+        <label for="card_number">Card number:</label><br>
+        <input type="text" name="card_number" placeholder="required" required/> </br>
+        <label for="name_on_card">Name on card:</label><br>
+        <input type="text" name="name_on_card" placeholder="required" required/> </br>
+        <label for="expiration_date">Expire on: (e.g. 2001-01-01)</label><br>
+        <input type="text" name="expiration_date" placeholder="required" required/> </br>
+
         <label></label><br>
-        <input type="submit" value = Register />
+        <input type="submit" value = Purchase />
         {% if error %}
             <p class="error"><strong>Error:</strong> {{error}}</p>
         {% endif %}
     </form>
+
+<a href="/flight_search">Cancel</a>
 
 </body>
 
