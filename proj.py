@@ -324,7 +324,7 @@ def update_my_flights():
 	return render_template('my_flights.html', flights = flights)
 
 #purchasing tickets
-@app.route('/ticket_purchase')
+@app.route('/ticket_purchase', methods=['GET', 'POST'])
 def ticket_purchase():
 	if ('customer' not in session.keys()):
 		return redirect('/customer_login')
