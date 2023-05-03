@@ -292,6 +292,7 @@ def customer_home():
 	else:
 		return redirect('/')
 
+#view purchased flights
 @app.route('/my_flights')
 def my_flights():
 	if ('customer' not in session.keys()):
@@ -304,7 +305,6 @@ def my_flights():
 		conn.commit()
 		cursor.close()
 		return render_template('my_flights.html', flights = flights)
-
 @app.route('/update_my_flights', methods=['GET', 'POST'])
 def update_my_flights():
 	cursor = conn.cursor()
@@ -321,6 +321,12 @@ def update_my_flights():
 	cursor.close()
 	return render_template('my_flights.html', flights = flights)
 
+#purchasing tickets
+@app.route('/ticket_purchase')
+def ticket_purchase():
+	if ('customer' not in session.keys()):
+		return redirect('/customer_login')
+	return render_template('ticket_purchase.html')
 
 
 
