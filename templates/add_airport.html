@@ -2,6 +2,7 @@
 <head>
 </head>
 <body>
+    <label><strong>Add airport</strong></label><br>
 <form action="/add_airportAuth" method="POST">
     <label for="airport_code">Airport code:</label><br>
     <input type="text" name = "airport_code" placeholder="required" required/> </br>
@@ -14,7 +15,7 @@
     <label for="type">Type (domestic/insternational/both):</label><br>
     <input type="text" name = "type" placeholder="required" required/> </br>
     <br><br>
-    <input type="submit" value = Register />
+    <input type="submit" value = Add />
     {% if error %}
         <p class="error"><strong>Error:</strong> {{error}}</p>
     {% endif %}

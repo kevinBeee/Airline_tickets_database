@@ -332,6 +332,8 @@ def ticket_purchase():
 
 
 
+
+
 #staff_home
 @app.route('/staff_home')
 def staff_home():
@@ -359,7 +361,7 @@ def view_flights_staff():
 		flights = cursor.fetchall()
 		conn.commit()
 		cursor.close()
-		print(flights)
+		#print(flights)
 		return render_template('view_flights_staff.html', flights=flights)
 	else:
 		return redirect('/')
