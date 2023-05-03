@@ -463,19 +463,19 @@ def add_airplaneAuth():
 def view_airplanes():
 	if ('staff' in session.keys()):
 		username = session['staff']
-		print(username)
+		#print(username)
 		cursor = conn.cursor()
 		query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
 		cursor.execute(query, (username))		
 		airline_name = cursor.fetchall()[0]['airline_name']
-		print(airline_name)
+		#print(airline_name)
 		conn.commit()
 		cursor.close()
 		cursor = conn.cursor()
 		query = "SELECT id FROM Airplane WHERE airline_name='" + airline_name + "'"
 		cursor.execute(query)
 		airplanes = cursor.fetchall()
-		print(airplanes)
+		#print(airplanes)
 		conn.commit()
 		cursor.close()
 		return render_template('view_airplanes.html', airplanes=airplanes)
@@ -596,6 +596,61 @@ def change_flight_statusAuth():
 	conn.commit()
 	cursor.close()
 	return view_flights_staff()
+
+#view customers in flight
+@app.route('/customer_in_flight')
+def customer_in_flight():
+	if ('staff' in session.keys()):
+		return render_template('customer_in_flight.html')
+	else:
+		return redirect('/')
+@app.route('/customer_in_flightAuth', methods=['GET', 'POST'])
+def customer_in_flightAuth():
+	#data from form
+	flight_number = request.form['flight_number']
+	departure_date = request.form['departure_date']
+	departure_time = request.form['departure_time']
+	#get airline name
+	username = session['staff']
+	cursor = conn.cursor()
+	query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
+	cursor.execute(query, (username))
+	airline_name = cursor.fetchall()[0]['airline_name']	
+	conn.commit()
+	cursor.close()
+	#find customer
+	cursor = conn.cursor()
+	ins = "SELECT first_name, last_name FROM Ticket WHERE flight_number=%s and departure_date=%s and departure_time=%s and airline_name=%s"
+	cursor.execute(ins, (flight_number, departure_date, departure_time, airline_name))
+	customers = cursor.fetchall()
+	conn.commit()
+	cursor.close()
+	return render_template('customer_in_flight_result.html', customers=customers)
+
+#view ratings
+@app.route('/view_ratings')
+def view_ratings():
+	if ('staff' in session.keys()):
+		cursor = conn.cursor()
+		#get airline name
+		username = session['staff']
+		cursor = conn.cursor()
+		query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
+		cursor.execute(query, (username))
+		airline_name = cursor.fetchall()[0]['airline_name']
+		conn.commit()
+		cursor.close()
+		#find ratings
+		cursor = conn.cursor()
+		query = "SELECT AVG(rate), flight_number FROM Purchase natural join Ticket where airline_name=%s GROUP BY flight_number"
+		cursor.execute(query, (airline_name))
+		ratings = cursor.fetchall()
+		conn.commit()
+		cursor.close()
+		return render_template('view_ratings.html', ratings=ratings)
+	else:
+		return redirect('/')
+
 
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000

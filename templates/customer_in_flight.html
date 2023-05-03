@@ -1,0 +1,23 @@
+<html>
+<head>
+</head>
+<body>
+    <label><strong>Search customers in flight:</strong></label><br>
+<form action="/customer_in_flight" method="POST">
+    <label>Flight number:</label><br>
+    <input type="number" name="flight_number" required><br><br>
+    <label>Departure Date: (e.g. 2001-01-01)</label><br>
+    <input type="text" name="departure_date" required><br><br>
+    <label>Departure time: (e.g. 10:00:00 or 10:00)</label><br>
+    <input type="text" name="departure_time" required><br><br>
+    <input type="submit" value="Search">
+</form>
+ 
+
+<a href="/staff_search_flight">Back</a><br><br>
+<a href="/staff_home">Staff Home</a>
+
+</body>
+
+
+</html>
