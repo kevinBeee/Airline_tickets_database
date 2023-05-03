@@ -177,7 +177,7 @@ def registerAuth():
 @app.route('/logout')
 def logout():
 	session.pop('customer')
-	return redirect('/')
+	return redirect('/customer_login')
 
 
 #staff login
@@ -277,7 +277,7 @@ def registerAuthStaff():
 @app.route('/logout_staff')
 def logout_staff():
 	session.pop('staff')
-	return redirect('/')
+	return redirect('/staff_login')
 
 
 
@@ -388,16 +388,19 @@ def add_airplaneAuth():
 def view_airplanes():
 	if ('staff' in session.keys()):
 		username = session['staff']
+		print(username)
 		cursor = conn.cursor()
 		query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
 		cursor.execute(query, (username))		
 		airline_name = cursor.fetchall()[0]['airline_name']
+		print(airline_name)
 		conn.commit()
 		cursor.close()
 		cursor = conn.cursor()
-		query = "SELECT id FROM Airplane WHERE airline_name=%s"
-		cursor.execute(query, (airline_name))
+		query = "SELECT id FROM Airplane WHERE airline_name='" + airline_name + "'"
+		cursor.execute(query)
 		airplanes = cursor.fetchall()
+		print(airplanes)
 		conn.commit()
 		cursor.close()
 		return render_template('view_airplanes.html', airplanes=airplanes)
@@ -490,7 +493,34 @@ def create_new_flightsAuth():
 		cursor.execute(ins, (flight_number, base_price, departure_date, departure_time, arrival_date, arrival_time, flight_status, tickets_booked, id, airline_name, departure_airport, arrival_airport))
 		conn.commit()
 		cursor.close()
-		return redirect(url_for('view_flights'))
+		return redirect(url_for('view_flights_staff'))
+
+#change flight status
+@app.route('/change_flight_status')
+def change_flight_status():
+	if ('staff' in session.keys()):
+		return render_template('change_flight_status.html')
+	else:
+		return redirect('/')
+@app.route('/change_flight_statusAuth', methods=['GET', 'POST'])
+def change_flight_statusAuth():
+	#data from form
+	flight_number = request.form['flight_number']
+	departure_date = request.form['departure_date']
+	departure_time = request.form['departure_time']
+	flight_status = request.form['flight_status']
+	#get airline name
+	username = session['staff']
+	cursor = conn.cursor()
+	query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
+	cursor.execute(query, (username))
+	airline_name = cursor.fetchall()[0]['airline_name']
+	#change
+	ins = "UPDATE Flight SET flight_status=%s WHERE flight_number=%s and departure_date=%s and departure_time=%s and airline_name=%s"
+	cursor.execute(ins, (flight_status, flight_number, departure_date, departure_time, airline_name))
+	conn.commit()
+	cursor.close()
+	return render_template('change_flight_status.html', message="Flight status changed successfully")
 
 
 app.secret_key = 'some key that you will never guess'

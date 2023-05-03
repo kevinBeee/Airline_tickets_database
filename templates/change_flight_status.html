@@ -1,0 +1,23 @@
+<html>
+<head>
+</head>
+<body>
+    <label>Change flight status:</label><br><br>
+<form action="/change_flight_statusAuth" method="POST">
+    <label for="flight_number">Flight number:</label><br>
+    <input type="number" name = "flight_number" placeholder="required" required/> </br>
+    <label for="departure_date">Departure date: (e.g. 2001-01-01)</label><br>
+    <input type="text" name = "departure_date" placeholder="required" required/> </br>
+    <label for="departure_time">Departure time: (e.g. 10:00 or 10:00:00)</label><br>
+    <input type="text" name = "departure_time" placeholder="required" required/> </br>
+    <label for="flight_status">New flight status: (on time/delayed)</label><br>
+    <input type="text" name = "flight_status" placeholder="required" required/> </br>
+    <br><br>
+    <input type="submit" value = Register />
+    {% if message %}
+        <p class="message"><strong>Status: </strong> {{message}}</p>
+    {% endif %}
+</form>
+<a href="/staff_home">Staff Home</a>
+</body>
+</html>
