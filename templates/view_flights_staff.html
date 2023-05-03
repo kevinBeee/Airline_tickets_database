@@ -1,0 +1,39 @@
+<html>
+<head>
+</head>
+<body>
+<label><strong>All flights:</strong></label><br>
+<table>
+    <th>Flight number</th>
+    <th>Base price</th>
+    <th>Departure airport</th>
+    <th>Departure date</th>
+    <th>Departure time</th>
+    <th>Arrival airport</th>
+    <th>Arrival date</th>
+    <th>Arrival time</th>
+    <th>Flight status</th>
+    <th>Tickets booked</th>
+    <th>Plane ID</th>
+    <th>Airline</th>
+{% for line in flights %}
+    <tr>
+        <td>{{line['flight_number']}}</td>
+        <td>{{line['base_price']}}</td>
+        <td>{{line['departure_airport']}}</td>
+        <td>{{line['departure_date']}}</td>
+        <td>{{line['departure_time']}}</td>
+        <td>{{line['arrival_airport']}}</td>
+        <td>{{line['arrival_date']}}</td>
+        <td>{{line['arrival_time']}}</td>
+        <td>{{line['flight_status']}}</td>
+        <td>{{line['tickets_booked']}}</td>
+        <td>{{line['id']}}</td>
+        <td>{{line['airline_name']}}</td>
+    </tr>
+{% endfor %}
+</table>
+<br><br>
+<a href="/staff_home">Staff Home</a>
+</body>
+</html>
