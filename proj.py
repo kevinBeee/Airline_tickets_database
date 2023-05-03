@@ -371,13 +371,44 @@ def add_airplaneAuth():
 	else:
 		#add airplane
 		ins = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, null, %s)"
-		print(ins, (id, seats, manufacturer, manufacturing_date, airline_name))
 		cursor.execute(ins, (id, seats, manufacturer, manufacturing_date, airline_name))
 		conn.commit()
 		cursor.close()
 		return redirect(url_for('staff_home'))
 
-		
+#add airport
+@app.route('/add_airport')
+def add_airport():
+	if ('staff' in session.keys()):
+		return render_template('add_airport.html')
+	else:
+		return redirect('/')
+@app.route('/add_airportAuth', methods=['GET', 'POST'])
+def add_airportAuth():
+	#data from form
+	airport_code = request.form['airport_code']
+	name = request.form['name']
+	city = request.form['city']
+	country = request.form['country']
+	type = request.form['type']
+	#check if airport already exists
+	cursor = conn.cursor()
+	query = "SELECT * FROM Airport WHERE airport_code = %s"
+	cursor.execute(query, (airport_code))
+	data = cursor.fetchone()
+	error = None
+	if(data):
+		error = "This airport already exists"
+		return render_template('add_airport.html', error = error)
+	else:
+		#add airport
+		ins = "INSERT INTO Airport VALUES(%s, %s, %s, %s, %s)"
+		cursor.execute(ins, (airport_code, name, city, country, type))
+		conn.commit()
+		cursor.close()
+		return redirect(url_for('staff_home'))
+
+
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
 #debug = True -> you don't have to restart flask
