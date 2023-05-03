@@ -512,7 +512,7 @@ def create_new_flightsAuth():
 		cursor.execute(ins, (flight_number, base_price, departure_date, departure_time, arrival_date, arrival_time, flight_status, tickets_booked, id, airline_name, departure_airport, arrival_airport))
 		conn.commit()
 		cursor.close()
-		return redirect(url_for('view_flights_staff'))
+		return view_flights_staff()
 
 #change flight status
 @app.route('/change_flight_status')
