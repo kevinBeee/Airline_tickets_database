@@ -402,6 +402,50 @@ def add_airportAuth():
 		cursor.close()
 		return redirect(url_for('staff_home'))
 
+#create new flight
+@app.route('/create_new_flights')
+def create_new_flights():
+	if ('staff' in session.keys()):
+		return render_template('create_new_flights.html')
+	else:
+		return redirect('/')
+@app.route('/create_new_flightsAuth', methods=['GET', 'POST'])
+def create_new_flightsAuth():
+	#data from form
+	flight_number = request.form['flight_number']
+	base_price = request.form['base_price']
+	departure_date = request.form['departure_date']
+	departure_time = request.form['departure_time']
+	arrival_date = request.form['arrival_date']
+	arrival_time = request.form['arrival_time']
+	flight_status = 'on time'
+	tickets_booked = 0
+	id = request.form['id']
+	departure_airport = request.form['departure_airport']
+	arrival_airport = request.form['arrival_airport']
+	#get airline name
+	username = session['staff']
+	cursor = conn.cursor()
+	query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
+	cursor.execute(query, (username))
+	airline_name = cursor.fetchall()[0]['airline_name']
+	#check if flight already exists
+	cursor = conn.cursor()
+	query = "SELECT * FROM Flight WHERE flight_number = %s and departure_date = %s and departure_time = %s and airline_name = %s"
+	cursor.execute(query, (flight_number, departure_date, departure_time, airline_name))
+	data = cursor.fetchone()
+	error = None
+	if(data):
+		error = "This flight already exists"
+		return render_template('create_new_flights.html', error = error)
+	else:
+		#add airport
+		ins = "INSERT INTO Flight VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+		cursor.execute(ins, (flight_number, base_price, departure_date, departure_time, arrival_date, arrival_time, flight_status, tickets_booked, id, airline_name, departure_airport, arrival_airport))
+		conn.commit()
+		cursor.close()
+		return redirect(url_for('staff_home'))
+
 
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
