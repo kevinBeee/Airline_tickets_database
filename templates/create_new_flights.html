@@ -1,0 +1,32 @@
+<html>
+<head>
+</head>
+<body>
+<form action="/create_new_flightsAuth" method="POST">
+    <label for="flight_number">Flight number:</label><br>
+    <input type="number" name = "flight_number" placeholder="required" required/> </br>
+    <label for="base_price">Base price:</label><br>
+    <input type="number" name = "base_price" placeholder="required" required/> </br>
+    <label for="departure_airport">Departure aiport code:</label><br>
+    <input type="text" name = "departure_airport" placeholder="required" required/> </br>
+    <label for="departure_date">Departure date:</label><br>
+    <input type="text" name = "departure_date" placeholder="required" required/> </br>
+    <label for="departure_time">Departure time:</label><br>
+    <input type="text" name = "departure_time" placeholder="required" required/> </br>
+    <label for="arrival_airport">Arrival airport code:</label><br>
+    <input type="text" name = "arrival_airport" placeholder="required" required/> </br>
+    <label for="arrival_date">Arrival date:</label><br>
+    <input type="text" name = "arrival_date" placeholder="required" required/> </br>
+    <label for="arrival_time">Arrival time:</label><br>
+    <input type="text" name = "arrival_time" placeholder="required" required/> </br>
+    <label for="id">Airplane ID:</label><br>
+    <input type="text" name = "id" placeholder="required" required/> </br>
+    <br><br>
+    <input type="submit" value = Register />
+    {% if error %}
+        <p class="error"><strong>Error:</strong> {{error}}</p>
+    {% endif %}
+</form>
+<a href="/staff_home">Staff Home</a>
+</body>
+</html>
