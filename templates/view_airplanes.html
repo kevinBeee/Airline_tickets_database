@@ -1,0 +1,16 @@
+<html>
+<head>
+</head>
+<body>
+<label>Airplanes in your airline: </label><br>
+<table>
+    <th>Airplane ID</th>
+{% for line in flights %}
+    <tr>
+        <td>{{line['airplane_id']}}</td>
+    </tr>
+{% endfor %}
+</table>
+<a href="/staff_home">Staff Home</a>
+</body>
+</html>

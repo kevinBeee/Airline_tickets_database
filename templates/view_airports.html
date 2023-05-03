@@ -1,0 +1,24 @@
+<html>
+<head>
+</head>
+<body>
+<label>Available airports: </label><br>
+<table>
+    <th>Airport Code</th>
+    <th>Name</th>
+    <th>city</th>
+    <th>Country</th>
+    <th>Type</th>
+{% for line in airports %}
+    <tr>
+        <td>{{line['airport_code']}}</td>
+        <td>{{line['name']}}</td>
+        <td>{{line['city']}}</td>
+        <td>{{line['country']}}</td>
+        <td>{{line['type']}}</td>
+    </tr>
+{% endfor %}
+</table>
+<a href="/staff_home">Staff Home</a>
+</body>
+</html>

@@ -376,7 +376,7 @@ def add_airplaneAuth():
 		cursor.execute(ins, (id, seats, manufacturer, manufacturing_date, airline_name))
 		conn.commit()
 		cursor.close()
-		return redirect(url_for('staff_home'))
+		return redirect(url_for('view_airplanes'))
 
 #add airport
 @app.route('/add_airport')
@@ -408,7 +408,19 @@ def add_airportAuth():
 		cursor.execute(ins, (airport_code, name, city, country, type))
 		conn.commit()
 		cursor.close()
-		return redirect(url_for('staff_home'))
+		return view_airports()
+@app.route('/view_airports')
+def view_airports():
+	if ('staff' in session.keys()):
+		cursor = conn.cursor()
+		query = "SELECT * FROM Airport"
+		cursor.execute(query)
+		airports = cursor.fetchall()
+		conn.commit()
+		cursor.close()
+		return render_template('view_airports.html', airports=airports)
+	else:
+		return redirect('/')
 
 #create new flight
 @app.route('/create_new_flights')
@@ -452,7 +464,7 @@ def create_new_flightsAuth():
 		cursor.execute(ins, (flight_number, base_price, departure_date, departure_time, arrival_date, arrival_time, flight_status, tickets_booked, id, airline_name, departure_airport, arrival_airport))
 		conn.commit()
 		cursor.close()
-		return redirect(url_for('staff_home'))
+		return redirect(url_for('view_flights'))
 
 
 app.secret_key = 'some key that you will never guess'
