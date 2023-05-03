@@ -328,7 +328,11 @@ def update_my_flights():
 def ticket_purchase():
 	if ('customer' not in session.keys()):
 		return redirect('/customer_login')
-	return render_template('ticket_purchase.html')
+	airline_name = request.form['airline_name']
+	flight_number = request.form['flight_number']
+	depart_date = request.form['departure_date']
+	depart_time = request.form['departure_time']
+	return render_template('ticket_purchase.html', airline_name=airline_name, flight_number=flight_number, departure_date=depart_date, departure_time=depart_time)
 @app.route('/purchase')
 
 

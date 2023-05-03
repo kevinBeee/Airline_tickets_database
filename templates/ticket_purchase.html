@@ -21,6 +21,12 @@
         <label for="expiration_date">Expire on: (e.g. 2001-01-01)</label><br>
         <input type="text" name="expiration_date" placeholder="required" required/> </br>
 
+
+        <input type="hidden" name="airline_name" value="{{airline_name}}">
+		<input type="hidden" name="flight_number" value="{{flight_number}}">
+		<input type="hidden" name="departure_date" value="{{departure_date}}">
+		<input type="hidden" name="departure_time" value="{{departure_time}}">
+
         <label></label><br>
         <input type="submit" value = Purchase />
         {% if error %}
