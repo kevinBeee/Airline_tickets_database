@@ -2,7 +2,7 @@
 <head>
 </head>
 <body>
-    <form action="/registerAuth" method="POST">
+    <form action="/purchase" method="POST">
         <label for="first_name">First name:</label><br>
         <input type="text" name = "first_name" placeholder="required" required/> </br>
         <label for="last_name">Last name:</label><br>
@@ -20,12 +20,14 @@
         <input type="text" name="name_on_card" placeholder="required" required/> </br>
         <label for="expiration_date">Expire on: (e.g. 2001-01-01)</label><br>
         <input type="text" name="expiration_date" placeholder="required" required/> </br>
-
+        <br>
 
         <input type="hidden" name="airline_name" value="{{airline_name}}">
 		<input type="hidden" name="flight_number" value="{{flight_number}}">
 		<input type="hidden" name="departure_date" value="{{departure_date}}">
 		<input type="hidden" name="departure_time" value="{{departure_time}}">
+
+        <h2>Price: {{price}}</h2>
 
         <label></label><br>
         <input type="submit" value = Purchase />

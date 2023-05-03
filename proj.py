@@ -1,6 +1,7 @@
 #Import Flask Library
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
+import datetime
 
 #Initialize the app from Flask
 app = Flask(__name__)
@@ -312,11 +313,11 @@ def update_my_flights():
 	cursor = conn.cursor()
 	option = request.form['dropdown']
 	if (option == 'future'):
-		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time > NOW()) or (departure_date > NOW())) and email=%s"
+		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time > NOW()) or (departure_date > NOW())) and email=%s"
 	elif (option == 'past'):
-		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time < NOW()) or (departure_date < NOW())) and email=%s"
+		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time < NOW()) or (departure_date < NOW())) and email=%s"
 	else:
-		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where email=%s"
+		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Purchase NATURAL JOIN Ticket where email=%s"
 	cursor.execute(query, (session['customer']))
 	flights = cursor.fetchall()
 	conn.commit()
@@ -328,12 +329,61 @@ def update_my_flights():
 def ticket_purchase():
 	if ('customer' not in session.keys()):
 		return redirect('/customer_login')
+	cursor = conn.cursor()
 	airline_name = request.form['airline_name']
 	flight_number = request.form['flight_number']
 	depart_date = request.form['departure_date']
 	depart_time = request.form['departure_time']
-	return render_template('ticket_purchase.html', airline_name=airline_name, flight_number=flight_number, departure_date=depart_date, departure_time=depart_time)
-@app.route('/purchase')
+	query = "SELECT base_price, tickets_booked, seats from Flight NATURAL JOIN Airplane where airline_name=%s and flight_number=%s and departure_date=%s and departure_time=%s"
+	cursor.execute(query, (airline_name, flight_number, depart_date, depart_time))
+	results = cursor.fetchone()
+	price = float(results['base_price'])
+	tickets_booked = results['tickets_booked']
+	total_seats = results['seats']
+	if (tickets_booked/total_seats >= 0.8):
+		price *= 1.25
+	cursor.close()
+	return render_template('ticket_purchase.html', airline_name=airline_name, flight_number=flight_number, departure_date=depart_date, departure_time=depart_time, price=price)
+@app.route('/purchase', methods=['GET', 'POST'])
+def purchase():
+	if ('customer' not in session.keys()):
+		return redirect('/')
+	cursor = conn.cursor()
+	first_name = request.form['first_name']
+	last_name = request.form['last_name']
+	date_of_birth = request.form['date_of_birth']
+	card_type = request.form['card_type']
+	card_number = request.form['card_number']
+	name_on_card = request.form['name_on_card']
+	expire_date = request.form['expiration_date']
+	airline_name = request.form['airline_name']
+	flight_number = request.form['flight_number']
+	depart_date = request.form['departure_date']
+	depart_time = request.form['departure_time']
+	query = "SELECT base_price, tickets_booked, seats from Flight NATURAL JOIN Airplane where airline_name=%s and flight_number=%s and departure_date=%s and departure_time=%s"
+	cursor.execute(query, (airline_name, flight_number, depart_date, depart_time))
+	results = cursor.fetchone()
+	price = float(results['base_price'])
+	tickets_booked = results['tickets_booked']
+	total_seats = results['seats']
+	if (tickets_booked/total_seats >= 0.8):
+		price *= 1.25
+	query = "SELECT max(id) FROM Ticket"
+	cursor.execute(query)
+	id = cursor.fetchone()['max(id)']
+	id += 1
+	email = session['customer']
+	purchase_date = datetime.date.today()
+	purchase_time = datetime.datetime.now().time()
+	add_ticket = "insert into Ticket values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+	cursor.execute(add_ticket, (id, first_name, last_name, date_of_birth, price, card_type, card_number, name_on_card, expire_date, purchase_date, purchase_time, flight_number, depart_date, depart_time, airline_name))
+	conn.commit()
+	add_to_purchase = "insert into Purchase values (%s, %s, null, null);"
+	cursor.execute(add_to_purchase, (email, id))
+	conn.commit()
+	cursor.close()
+	return render_template('flight_search.html', loggedin=True)
+
 
 
 #staff_home
