@@ -28,6 +28,7 @@ staff_home.html: page for staff home after login/register
         view_airplanes.html: page for staff to see all airplanes in the airline he works for
     add_airport.html: page for staff to add an airport
         view_airports.html: page for staff to see all airports
-    view_ratings.html: page for staff to see averaging ratings for flights
+    view_ratings.html: page for staff to see average ratings for flights
+    view_frequent_customer.html: page for staff to see frequent customer all time / over a period of time
     view_reports.html: 
-    view_earned_revenue.html: 
+    view_earned_revenue.html: page for staff to see total revenue (all, in the past year, or in the past month)
