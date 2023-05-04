@@ -14,7 +14,7 @@
 	<th>flight number</th>
 	<th>departure date</th>
 	<th>departure_time</th>
-{% for line in flights %}
+{% for line in tickets %}
 	<tr>
 		<td>{{line['airline_name']}}</td>
 		<td>{{line['flight_number']}}</td>
@@ -22,10 +22,7 @@
 		<td>{{line['departure_time']}}</td>
         <td>
 			<form method="post" action="/cancel_trip/cancel">
-				<input type="hidden" name="airline_name" value="{{line['airline_name']}}">
-				<input type="hidden" name="flight_number" value="{{line['flight_number']}}">
-				<input type="hidden" name="departure_date" value="{{line['departure_date']}}">
-				<input type="hidden" name="departure_time" value="{{line['departure_time']}}">
+				<input type="hidden" name="ticket_id" value="{{line['id']}}">
 				<button type="submit">Cancel trip</button>
 		  	</form>
 		</td>

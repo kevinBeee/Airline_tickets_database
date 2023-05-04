@@ -390,13 +390,27 @@ def cancel_trip():
 	if ('customer' not in session.keys()):
 		return redirect('/customer_login')
 	cursor = conn.cursor()
-	query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Purchase NATURAL JOIN Ticket where timestamp(concat(departure_date, ' ', departure_time)) > (NOW() + INTERVAL 24 HOUR) and email=%s"
+	query = "SELECT id, airline_name, flight_number, departure_date, departure_time FROM Purchase NATURAL JOIN Ticket where timestamp(concat(departure_date, ' ', departure_time)) > (NOW() + INTERVAL 24 HOUR) and email=%s"
 	email = session['customer']
 	cursor.execute(query, (email))
-	flights = cursor.fetchall()
-	return render_template('cancel_trip.html', flights=flights)
+	tickets = cursor.fetchall()
+	cursor.close()
+	return render_template('cancel_trip.html', tickets=tickets)
 @app.route('/cancel_trip/cancel', methods=['GET', 'POST'])
 def cancel():
+	if ('customer' not in session.keys()):
+		return redirect('/customer_login')
+	cursor = conn.cursor()
+	email = session['customer']
+	ticket_id = request.form['ticket_id']
+	delete_purchase = "DELETE FROM Purchase where email=%s and id=%s"
+	cursor.execute(delete_purchase, (email, ticket_id))
+	conn.commit()
+	delete_ticket = "DELETE FROM Ticket where id=%s"
+	cursor.execute(delete_ticket, ticket_id)
+	conn.commit()
+	cursor.close()
+	print("canceled trip")
 	return redirect('/customer_home')
 
 
