@@ -680,7 +680,7 @@ def customer_in_flightAuth():
 	customers = cursor.fetchall()
 	conn.commit()
 	cursor.close()
-	return render_template('customer_in_flight_result.html', customers=customers)
+	return render_template('customer_in_flight.html', customers=customers)
 
 #view ratings
 @app.route('/view_ratings')
@@ -736,6 +736,35 @@ def view_frequent_customer():
 		return render_template('view_frequent_customer.html', customer=customer, customer1=customer1)
 	else:
 		return redirect('/')
+
+#view report
+@app.route('/view_reports')
+def view_reports():
+	if ('staff' in session.keys()):
+		return render_template('view_reports.html')
+	else:
+		return redirect('/')
+@app.route('/view_reportsAuth', methods=['GET', 'POST'])
+def view_reportsAuth():
+	#data from form
+	start_date = request.form['start_date']
+	end_date = request.form['end_date']
+	#get airline name
+	username = session['staff']
+	cursor = conn.cursor()
+	query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
+	cursor.execute(query, (username))
+	airline_name = cursor.fetchall()[0]['airline_name']	
+	conn.commit()
+	cursor.close()
+	#find report
+	cursor = conn.cursor()
+	ins = "SELECT COUNT(*) as count FROM Ticket WHERE airline_name=%s and (purchase_date BETWEEN %s AND %s); "
+	cursor.execute(ins, (airline_name, start_date, end_date))
+	result = cursor.fetchall()[0]['count']
+	conn.commit()
+	cursor.close()
+	return render_template('view_reports.html', result=result)
 
 #view earned revenue
 @app.route('/view_earned_revenue')

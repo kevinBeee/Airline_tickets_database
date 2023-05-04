@@ -1,0 +1,21 @@
+<html>
+<head>
+</head>
+<body>
+<form action="/view_reportsAuth" method="POST">
+    <label><strong>View number of tickets sold in a time period:</strong></label><br>
+    <label>Start date: (e.g. 2001-01-01)</label><br>
+    <input type="text" name="start_date" required><br><br>
+    <label>End date: (e.g. 2011-01-01)</label><br>
+    <input type="text" name="end_date" required><br><br>
+    <input type="submit" value="Search">
+</form><br>
+{% if result %}
+    <label><strong>Search result: </strong><label><br>
+    <strong>{{result}}</strong> tickets sold in this time period. 
+{% endif %}
+</table>
+<br><br>
+<a href="/staff_home">Staff Home</a>
+</body>
+</html>
