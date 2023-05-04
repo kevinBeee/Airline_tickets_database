@@ -1,0 +1,19 @@
+<html>
+<head>
+</head>
+<body>
+<label><strong>Flights and ratings:</strong> </label><br><br>
+<table>
+    <th>Flight number</th>
+    <th>Rating</th>
+{% for line in ratings %}
+    <tr>
+        <td>{{line['flight_number']}}</td>
+        <td>{{line['AVG(rate)']}}</td>
+    </tr>
+{% endfor %}
+</table>
+<br><br>
+<a href="/staff_home">Staff Home</a>
+</body>
+</html>

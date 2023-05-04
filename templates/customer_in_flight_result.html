@@ -1,0 +1,20 @@
+<html>
+<head>
+</head>
+<body>
+<label><strong>Customers in this flight:</strong> </label><br><br>
+<table>
+    <th>First name</th>
+    <th>Last name</th>
+{% for line in customers %}
+    <tr>
+        <td>{{line['first_name']}}</td>
+        <td>{{line['last_name']}}</td>
+    </tr>
+{% endfor %}
+</table>
+<br><br>
+<a href="/customer_in_flight">Search customers in another flight</a><br><br>
+<a href="/staff_home">Staff Home</a>
+</body>
+</html>
