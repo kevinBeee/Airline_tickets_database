@@ -2,11 +2,23 @@
 <head>
 </head>
 <body>
-<label><strong>Customers and number of purchases:</strong> </label><br><br>
+<label><strong>Frequent customer all time: </strong> </label>
 <table>
     <th>Customer email</th>
     <th>Number of purchases</th>
 {% for line in customer %}
+    <tr>
+        <td>{{line['email']}}</td>
+        <td>{{line['count']}}</td>
+    </tr>
+{% endfor %}
+</table>
+<br><br>
+<label><strong>Frequent customer in last one year: </strong> </label>
+<table>
+    <th>Customer email</th>
+    <th>Number of purchases</th>
+{% for line in customer1 %}
     <tr>
         <td>{{line['email']}}</td>
         <td>{{line['count']}}</td>

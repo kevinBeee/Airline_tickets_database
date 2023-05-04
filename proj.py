@@ -719,14 +719,59 @@ def view_frequent_customer():
 		airline_name = cursor.fetchall()[0]['airline_name']
 		conn.commit()
 		cursor.close()
-		#find ratings
+		#find all ratings
 		cursor = conn.cursor()
 		query = "SELECT email, COUNT(*) as count FROM Purchase natural join Ticket where airline_name=%s GROUP BY email ORDER BY count DESC; "
 		cursor.execute(query, (airline_name))
 		customer = cursor.fetchall()
 		conn.commit()
 		cursor.close()
-		return render_template('view_frequent_customer.html', customer=customer)
+		#find ratings in last one year
+		cursor = conn.cursor()
+		query = "SELECT email, COUNT(*) as count FROM Purchase NATURAL JOIN Ticket WHERE airline_name = %s AND departure_date BETWEEN DATE_ADD(CURDATE(), INTERVAL -365 DAY) AND CURDATE() GROUP BY email ORDER BY count DESC; "
+		cursor.execute(query, (airline_name))
+		customer1 = cursor.fetchall()
+		conn.commit()
+		cursor.close()
+		return render_template('view_frequent_customer.html', customer=customer, customer1=customer1)
+	else:
+		return redirect('/')
+
+#view earned revenue
+@app.route('/view_earned_revenue')
+def view_earned_revenue():
+	if ('staff' in session.keys()):
+		cursor = conn.cursor()
+		#get airline name
+		username = session['staff']
+		cursor = conn.cursor()
+		query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
+		cursor.execute(query, (username))
+		airline_name = cursor.fetchall()[0]['airline_name']
+		conn.commit()
+		cursor.close()
+		#find total revenue
+		cursor = conn.cursor()
+		query = "SELECT SUM(price) as total FROM Purchase NATURAL JOIN Ticket WHERE airline_name = %s; "
+		cursor.execute(query, (airline_name))
+		revenue = cursor.fetchall()[0]['total']
+		conn.commit()
+		cursor.close()
+		#find total revenue in last one month
+		cursor = conn.cursor()
+		query = "SELECT SUM(price) as total FROM Purchase NATURAL JOIN Ticket WHERE airline_name = %s AND departure_date BETWEEN DATE_ADD(CURDATE(), INTERVAL -30 DAY) AND CURDATE(); "
+		cursor.execute(query, (airline_name))
+		revenue_month = cursor.fetchall()[0]['total']
+		conn.commit()
+		cursor.close()
+		#find total revenue in last one year
+		cursor = conn.cursor()
+		query = "SELECT SUM(price) as total FROM Purchase NATURAL JOIN Ticket WHERE airline_name = %s AND departure_date BETWEEN DATE_ADD(CURDATE(), INTERVAL -365 DAY) AND CURDATE(); "
+		cursor.execute(query, (airline_name))
+		revenue_year = cursor.fetchall()[0]['total']
+		conn.commit()
+		cursor.close()
+		return render_template('view_earned_revenue.html', revenue=revenue, revenue_month=revenue_month, revenue_year=revenue_year)
 	else:
 		return redirect('/')
 
