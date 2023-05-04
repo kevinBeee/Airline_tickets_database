@@ -6,12 +6,12 @@
 </head>
 
 <body>
-<form action="/update_my_flights" method="post">
+<form action="/my_flights/update" method="post">
     <label for="dropdown">Choose to view:</label>
     <select name="dropdown" id="dropdown">
-        <option value="future">Future Flights</option>
-        <option value="past">Past Flights</option>
-        <option value="all">All Flights</option>
+        <option value="future" {% if option == 'future' %} selected {% endif %}>Future Flights</option>
+        <option value="past" {% if option == 'past' %} selected {% endif %}>Past Flights</option>
+        <option value="all" {% if option == 'all' %} selected {% endif %}>All Flights</option>
     </select>
     <button type="submit">Submit</button>
 </form>

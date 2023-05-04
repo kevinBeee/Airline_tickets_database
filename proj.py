@@ -300,13 +300,14 @@ def my_flights():
 		return redirect('/customer_login')
 	else:
 		cursor = conn.cursor()
+		option = 'future'
 		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time > NOW()) or (departure_date > NOW())) and email=%s"
 		cursor.execute(query, (session['customer']))
 		flights = cursor.fetchall()
 		conn.commit()
 		cursor.close()
-		return render_template('my_flights.html', flights = flights)
-@app.route('/update_my_flights', methods=['GET', 'POST'])
+		return render_template('my_flights.html', option=option, flights = flights)
+@app.route('/my_flights/update', methods=['GET', 'POST'])
 def update_my_flights():
 	if ('customer' not in session.keys()):
 		return redirect('/customer_login')
@@ -322,7 +323,7 @@ def update_my_flights():
 	flights = cursor.fetchall()
 	conn.commit()
 	cursor.close()
-	return render_template('my_flights.html', flights = flights)
+	return render_template('my_flights.html', option=option, flights = flights)
 
 #purchasing tickets
 @app.route('/ticket_purchase', methods=['GET', 'POST'])
