@@ -291,13 +291,13 @@ def customer_home():
 		email = session['customer']
 		return render_template('customer_home.html', email=email)
 	else:
-		return redirect('/')
+		return redirect('/customer_login')
 
 #view purchased flights
 @app.route('/my_flights')
 def my_flights():
 	if ('customer' not in session.keys()):
-		return redirect('/')
+		return redirect('/customer_login')
 	else:
 		cursor = conn.cursor()
 		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time > NOW()) or (departure_date > NOW())) and email=%s"
@@ -309,7 +309,7 @@ def my_flights():
 @app.route('/update_my_flights', methods=['GET', 'POST'])
 def update_my_flights():
 	if ('customer' not in session.keys()):
-		return redirect('/')
+		return redirect('/customer_login')
 	cursor = conn.cursor()
 	option = request.form['dropdown']
 	if (option == 'future'):
@@ -450,7 +450,7 @@ def staff_home():
 		username = session['staff']
 		return render_template('staff_home.html', username=username)
 	else:
-		return redirect('/')
+		return redirect('/staff_login')
 
 @app.route('/view_flights_staff')
 def view_flights_staff():
@@ -473,7 +473,7 @@ def view_flights_staff():
 		#print(flights)
 		return render_template('view_flights_staff.html', flights=flights)
 	else:
-		return redirect('/')
+		return redirect('/staff_login')
 
 #add airplane
 @app.route('/add_airplane')
@@ -481,7 +481,7 @@ def add_airplane():
 	if ('staff' in session.keys()):
 		return render_template('add_airplane.html')
 	else:
-		return redirect('/')
+		return redirect('/staff_login')
 @app.route('/add_airplaneAuth', methods=['GET', 'POST'])
 def add_airplaneAuth():
 	#data from form
@@ -535,7 +535,7 @@ def view_airplanes():
 		cursor.close()
 		return render_template('view_airplanes.html', airplanes=airplanes)
 	else:
-		return redirect('/')
+		return redirect('/staff_login')
 
 #add airport
 @app.route('/add_airport')
@@ -543,7 +543,7 @@ def add_airport():
 	if ('staff' in session.keys()):
 		return render_template('add_airport.html')
 	else:
-		return redirect('/')
+		return redirect('/staff_login')
 @app.route('/add_airportAuth', methods=['GET', 'POST'])
 def add_airportAuth():
 	#data from form
@@ -579,7 +579,7 @@ def view_airports():
 		cursor.close()
 		return render_template('view_airports.html', airports=airports)
 	else:
-		return redirect('/')
+		return redirect('/staff_login')
 
 #create new flight
 @app.route('/create_new_flights')
@@ -587,7 +587,7 @@ def create_new_flights():
 	if ('staff' in session.keys()):
 		return render_template('create_new_flights.html')
 	else:
-		return redirect('/')
+		return redirect('/staff_login')
 @app.route('/create_new_flightsAuth', methods=['GET', 'POST'])
 def create_new_flightsAuth():
 	#data from form
@@ -631,7 +631,7 @@ def change_flight_status():
 	if ('staff' in session.keys()):
 		return render_template('change_flight_status.html')
 	else:
-		return redirect('/')
+		return redirect('/staff_login')
 @app.route('/change_flight_statusAuth', methods=['GET', 'POST'])
 def change_flight_statusAuth():
 	#data from form
@@ -658,7 +658,7 @@ def customer_in_flight():
 	if ('staff' in session.keys()):
 		return render_template('customer_in_flight.html')
 	else:
-		return redirect('/')
+		return redirect('/staff_login')
 @app.route('/customer_in_flightAuth', methods=['GET', 'POST'])
 def customer_in_flightAuth():
 	#data from form
@@ -704,7 +704,7 @@ def view_ratings():
 		cursor.close()
 		return render_template('view_ratings.html', ratings=ratings)
 	else:
-		return redirect('/')
+		return redirect('/staff_login')
 
 #view frequent customers
 @app.route('/view_frequent_customer')
@@ -735,7 +735,7 @@ def view_frequent_customer():
 		cursor.close()
 		return render_template('view_frequent_customer.html', customer=customer, customer1=customer1)
 	else:
-		return redirect('/')
+		return redirect('/staff_login')
 
 #view report
 @app.route('/view_reports')
@@ -743,7 +743,7 @@ def view_reports():
 	if ('staff' in session.keys()):
 		return render_template('view_reports.html')
 	else:
-		return redirect('/')
+		return redirect('/staff_login')
 @app.route('/view_reportsAuth', methods=['GET', 'POST'])
 def view_reportsAuth():
 	#data from form
@@ -802,7 +802,7 @@ def view_earned_revenue():
 		cursor.close()
 		return render_template('view_earned_revenue.html', revenue=revenue, revenue_month=revenue_month, revenue_year=revenue_year)
 	else:
-		return redirect('/')
+		return redirect('/staff_login')
 
 
 app.secret_key = 'some key that you will never guess'
