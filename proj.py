@@ -679,6 +679,30 @@ def view_ratings():
 	else:
 		return redirect('/')
 
+#view frequent customers
+@app.route('/view_frequent_customer')
+def view_frequent_customer():
+	if ('staff' in session.keys()):
+		cursor = conn.cursor()
+		#get airline name
+		username = session['staff']
+		cursor = conn.cursor()
+		query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
+		cursor.execute(query, (username))
+		airline_name = cursor.fetchall()[0]['airline_name']
+		conn.commit()
+		cursor.close()
+		#find ratings
+		cursor = conn.cursor()
+		query = "SELECT email, COUNT(*) as count FROM Purchase natural join Ticket where airline_name=%s GROUP BY email ORDER BY count DESC; "
+		cursor.execute(query, (airline_name))
+		customer = cursor.fetchall()
+		conn.commit()
+		cursor.close()
+		return render_template('view_frequent_customer.html', customer=customer)
+	else:
+		return redirect('/')
+
 
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
