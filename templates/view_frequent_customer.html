@@ -1,0 +1,19 @@
+<html>
+<head>
+</head>
+<body>
+<label><strong>Customers and number of purchases:</strong> </label><br><br>
+<table>
+    <th>Customer email</th>
+    <th>Number of purchases</th>
+{% for line in customer %}
+    <tr>
+        <td>{{line['email']}}</td>
+        <td>{{line['count']}}</td>
+    </tr>
+{% endfor %}
+</table>
+<br><br>
+<a href="/staff_home">Staff Home</a>
+</body>
+</html>
