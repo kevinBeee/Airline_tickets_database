@@ -344,10 +344,10 @@ def ticket_purchase():
 		price *= 1.25
 	cursor.close()
 	return render_template('ticket_purchase.html', airline_name=airline_name, flight_number=flight_number, departure_date=depart_date, departure_time=depart_time, price=price)
-@app.route('/purchase', methods=['GET', 'POST'])
+@app.route('/ticket_purchase/purchase', methods=['GET', 'POST'])
 def purchase():
 	if ('customer' not in session.keys()):
-		return redirect('/')
+		return redirect('/customer_login')
 	cursor = conn.cursor()
 	first_name = request.form['first_name']
 	last_name = request.form['last_name']
@@ -384,6 +384,20 @@ def purchase():
 	cursor.close()
 	return render_template('flight_search.html', loggedin=True)
 
+#cancel flight ticket
+@app.route('/cancel_trip', methods=['GET', 'POST'])
+def cancel_trip():
+	if ('customer' not in session.keys()):
+		return redirect('/customer_login')
+	cursor = conn.cursor()
+	query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Purchase NATURAL JOIN Ticket where timestamp(concat(departure_date, ' ', departure_time)) > (NOW() + INTERVAL 24 HOUR) and email=%s"
+	email = session['customer']
+	cursor.execute(query, (email))
+	flights = cursor.fetchall()
+	return render_template('cancel_trip.html', flights=flights)
+@app.route('/cancel_trip/cancel', methods=['GET', 'POST'])
+def cancel():
+	return redirect('/customer_home')
 
 
 
