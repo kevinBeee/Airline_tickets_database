@@ -442,6 +442,33 @@ def post():
 	return redirect(url_for('rate_and_comment'))
 
 
+#track spending
+@app.route('/spending')
+def spending():
+	cursor = conn.cursor()
+	email = session['customer']
+	query = "SELECT MONTH(purchase_date) as month, sum(price) as spending FROM Purchase NATURAL JOIN Ticket where purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) and email=%s GROUP BY MONTH(purchase_date) ORDER by MONTH(purchase_date) ASC;"
+	cursor.execute(query, email)
+	results = cursor.fetchall()
+	total = 0
+	for line in results:
+		total += line['spending']
+	return render_template('spending.html', results=results, total=total)
+@app.route('/spending/ranged', methods=['GET', 'POST'])
+def rangedspending():
+	cursor = conn.cursor()
+	email = session['customer']
+	start = request.form['start_date']
+	end = request.form['end_date']
+	query = "SELECT MONTH(purchase_date) as month, sum(price) as spending FROM Purchase NATURAL JOIN Ticket where purchase_date >= %s and purchase_date <= %s and email=%s GROUP BY MONTH(purchase_date) ORDER by MONTH(purchase_date) ASC;"
+	cursor.execute(query, (start, end, email))
+	results = cursor.fetchall()
+	total = 0
+	for line in results:
+		total += line['spending']
+	return render_template('spending.html', results=results, total=total)
+
+
 
 #staff_home
 @app.route('/staff_home')
