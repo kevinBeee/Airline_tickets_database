@@ -1,0 +1,32 @@
+<html>
+<head>
+</head>
+<body>
+<form action="/spending/ranged" method="POST">
+    <h3>Select a range of dates:</h3>
+    <label>Start date: (e.g. 2001-01-01)</label><br>
+    <input type="text" name="start_date"><br>
+    <label>End date: (e.g. 2011-01-01)</label><br>
+    <input type="text" name="end_date"><br><br>
+
+    <input type="submit" value="Search">
+</form><br>
+
+
+<table>
+    <th>Month</th>
+    <th>Spending</th>
+{% for line in results %}
+    <tr>
+        <td>{{line['month']}}</td>
+        <td>{{line['spending']}}</td>
+    </tr>
+{% endfor %}
+</table>
+<h4>Total spending: {{ total }}</h6>
+<br>
+
+
+<a href="/customer_home">Back</a>
+</body>
+</html>

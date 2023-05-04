@@ -300,13 +300,14 @@ def my_flights():
 		return redirect('/customer_login')
 	else:
 		cursor = conn.cursor()
+		option = 'future'
 		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time > NOW()) or (departure_date > NOW())) and email=%s"
 		cursor.execute(query, (session['customer']))
 		flights = cursor.fetchall()
 		conn.commit()
 		cursor.close()
-		return render_template('my_flights.html', flights = flights)
-@app.route('/update_my_flights', methods=['GET', 'POST'])
+		return render_template('my_flights.html', option=option, flights = flights)
+@app.route('/my_flights/update', methods=['GET', 'POST'])
 def update_my_flights():
 	if ('customer' not in session.keys()):
 		return redirect('/customer_login')
@@ -322,7 +323,7 @@ def update_my_flights():
 	flights = cursor.fetchall()
 	conn.commit()
 	cursor.close()
-	return render_template('my_flights.html', flights = flights)
+	return render_template('my_flights.html', option=option, flights = flights)
 
 #purchasing tickets
 @app.route('/ticket_purchase', methods=['GET', 'POST'])
@@ -417,6 +418,8 @@ def cancel():
 #rate and comment
 @app.route('/rate_and_comment', methods=['GET', 'POST'])
 def rate_and_comment():
+	if ('customer' not in session.keys()):
+		return redirect('/customer_login')
 	cursor = conn.cursor()
 	email = session['customer']
 	query = "SELECT T.id, F.airline_name, F.flight_number, F.departure_date, F.departure_time, rate, comments FROM Purchase NATURAL JOIN Ticket as T INNER JOIN Flight as F where (T.airline_name=F.airline_name and T.flight_number=F.flight_number and T.departure_date=F.departure_date and T.departure_time=F.departure_time) and timestamp(concat(arrival_date, ' ', arrival_time)) < NOW() and email=%s"
@@ -426,10 +429,14 @@ def rate_and_comment():
 	return render_template('rate_and_comment.html', flights=flights)
 @app.route('/rate_and_comment/posting_page', methods=['GET', 'POST'])
 def posting_page():
+	if ('customer' not in session.keys()):
+		return redirect('/customer_login')
 	ticket_id = request.form['ticket_id']
 	return render_template('rate_comment_post.html', ticket_id=ticket_id)
 @app.route('/rate_and_comment/posting_page/post', methods=['GET', 'POST'])
 def post():
+	if ('customer' not in session.keys()):
+		return redirect('/customer_login')
 	cursor = conn.cursor()
 	email = session['customer']
 	ticket_id = request.form['ticket_id']
@@ -440,6 +447,37 @@ def post():
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('rate_and_comment'))
+
+
+#track spending
+@app.route('/spending')
+def spending():
+	if ('customer' not in session.keys()):
+		return redirect('/customer_login')
+	cursor = conn.cursor()
+	email = session['customer']
+	query = "SELECT MONTHNAME(purchase_date) as month, sum(price) as spending FROM Purchase NATURAL JOIN Ticket where purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) and email=%s GROUP BY MONTH(purchase_date) ORDER by MONTH(purchase_date) ASC;"
+	cursor.execute(query, email)
+	results = cursor.fetchall()
+	total = 0
+	for line in results:
+		total += line['spending']
+	return render_template('spending.html', results=results, total=total)
+@app.route('/spending/ranged', methods=['GET', 'POST'])
+def rangedspending():
+	if ('customer' not in session.keys()):
+		return redirect('/customer_login')
+	cursor = conn.cursor()
+	email = session['customer']
+	start = request.form['start_date']
+	end = request.form['end_date']
+	query = "SELECT MONTHNAME(purchase_date) as month, sum(price) as spending FROM Purchase NATURAL JOIN Ticket where purchase_date >= %s and purchase_date <= %s and email=%s GROUP BY MONTH(purchase_date) ORDER by MONTH(purchase_date) ASC;"
+	cursor.execute(query, (start, end, email))
+	results = cursor.fetchall()
+	total = 0
+	for line in results:
+		total += line['spending']
+	return render_template('spending.html', results=results, total=total)
 
 
 
