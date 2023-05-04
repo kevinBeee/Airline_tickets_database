@@ -300,7 +300,7 @@ def my_flights():
 		return redirect('/')
 	else:
 		cursor = conn.cursor()
-		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Customer NATURAL JOIN Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time > NOW()) or (departure_date > NOW())) and email=%s"
+		query = "SELECT airline_name, flight_number, departure_date, departure_time FROM Purchase NATURAL JOIN Ticket where ((departure_date = NOW() and departure_time > NOW()) or (departure_date > NOW())) and email=%s"
 		cursor.execute(query, (session['customer']))
 		flights = cursor.fetchall()
 		conn.commit()
@@ -413,6 +413,33 @@ def cancel():
 	print("canceled trip")
 	return redirect('/customer_home')
 
+
+#rate and comment
+@app.route('/rate_and_comment', methods=['GET', 'POST'])
+def rate_and_comment():
+	cursor = conn.cursor()
+	email = session['customer']
+	query = "SELECT T.id, F.airline_name, F.flight_number, F.departure_date, F.departure_time, rate, comments FROM Purchase NATURAL JOIN Ticket as T INNER JOIN Flight as F where (T.airline_name=F.airline_name and T.flight_number=F.flight_number and T.departure_date=F.departure_date and T.departure_time=F.departure_time) and timestamp(concat(arrival_date, ' ', arrival_time)) < NOW() and email=%s"
+	cursor.execute(query, email)
+	flights = cursor.fetchall()
+	cursor.close()
+	return render_template('rate_and_comment.html', flights=flights)
+@app.route('/rate_and_comment/posting_page', methods=['GET', 'POST'])
+def posting_page():
+	ticket_id = request.form['ticket_id']
+	return render_template('rate_comment_post.html', ticket_id=ticket_id)
+@app.route('/rate_and_comment/posting_page/post', methods=['GET', 'POST'])
+def post():
+	cursor = conn.cursor()
+	email = session['customer']
+	ticket_id = request.form['ticket_id']
+	rating = request.form['rating']
+	comment = request.form['comment']
+	post_comment = "UPDATE Purchase SET rate=%s, comments=%s where id=%s and email=%s"
+	cursor.execute(post_comment, (rating, comment, ticket_id, email))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('rate_and_comment'))
 
 
 

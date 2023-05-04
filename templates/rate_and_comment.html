@@ -1,0 +1,63 @@
+<html>
+<head>
+</head>
+<body>
+
+<label></label><br>
+<h3>Choose one trip to rate and comment:</h3>
+<table>
+	<th>airline</th>
+	<th>flight number</th>
+	<th>departure date</th>
+	<th>departure_time</th>
+{% for line in flights %}
+	<tr>
+		<td>{{line['airline_name']}}</td>
+		<td>{{line['flight_number']}}</td>
+		<td>{{line['departure_date']}}</td>
+		<td>{{line['departure_time']}}</td>
+        <td>
+			<form method="post" action="/rate_and_comment/posting_page">
+				<input type="hidden" name="ticket_id" value="{{line['id']}}">
+				<button type="submit">Rate trip</button>
+		  	</form>
+		</td>
+	</tr>
+{% endfor %}
+</table>
+<br><br>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<h3>Past ratings and comments:</h3>
+<table>
+	<th>airline</th>
+	<th>flight number</th>
+	<th>departure date</th>
+	<th>departure_time</th>
+	<th>Rating</th>
+	<th>Comment</th>
+
+{% for line in flights %}
+	<tr>
+		<td>{{line['airline_name']}}</td>
+		<td>{{line['flight_number']}}</td>
+		<td>{{line['departure_date']}}</td>
+		<td>{{line['departure_time']}}</td>
+		<td>{{line['rate']}}</td>
+		<td>{{line['comments']}}</td>
+	</tr>
+{% endfor %}
+</table>
+<br><br>
+
+<a href="/customer_home">Back</a>
+
+</body>
+
+
+</html>
