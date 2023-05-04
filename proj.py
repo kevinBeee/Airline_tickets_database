@@ -804,6 +804,47 @@ def view_earned_revenue():
 	else:
 		return redirect('/staff_login')
 
+#search flight
+@app.route('/staff_search_flight')
+def staff_search_flight():
+	if ('staff' in session.keys()):
+		return render_template('staff_search_flight.html')
+	else:
+		return redirect('/staff_login')
+@app.route('/staff_search_flightAuth', methods=['GET', 'POST'])
+def staff_search_flightAuth():
+	#data from form
+	search_type = request.form['search_type']
+	start_date = request.form['start_date']
+	end_date = request.form['end_date']
+	departure_airport = request.form['departure_airport']
+	arrival_airport = request.form['arrival_airport']
+	#get airline name
+	username = session['staff']
+	cursor = conn.cursor()
+	query = 'SELECT airline_name FROM Airline_staff WHERE username = %s'
+	cursor.execute(query, (username))
+	airline_name = cursor.fetchall()[0]['airline_name']	
+	conn.commit()
+	cursor.close()
+	#find flight
+	cursor = conn.cursor()
+	if (search_type == 'time_period'):
+		ins = "SELECT * from Flight WHERE airline_name=%s and (departure_date BETWEEN %s AND %s); "
+		cursor.execute(ins, (airline_name, start_date, end_date))
+		result = cursor.fetchall()
+	elif (search_type == 'airport_code'):
+		ins = "SELECT * from Flight WHERE airline_name=%s and departure_airport=%s and arrival_airport=%s;"
+		cursor.execute(ins, (airline_name, departure_airport, arrival_airport))
+		result = cursor.fetchall()
+	else: #both
+		ins = "SELECT * from Flight WHERE airline_name=%s and departure_airport=%s and arrival_airport=%s and (departure_date BETWEEN %s AND %s); "
+		cursor.execute(ins, (airline_name, departure_airport, arrival_airport, start_date, end_date))
+		result = cursor.fetchall()
+	conn.commit()
+	cursor.close()
+	return render_template('staff_search_flight.html', result=result)
+
 
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000

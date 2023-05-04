@@ -1,0 +1,57 @@
+<html>
+<head>
+</head>
+<body>
+<form action="/staff_search_flightAuth" method="POST">
+    <label>Search by:</label>
+    <input type="radio" name="search_type" value="time_period" checked>Time period
+    <input type="radio" name="search_type" value="airport_code">Airport Code
+    <input type="radio" name="search_type" value="both">Both
+    <br><br>
+    <label>Start date: (e.g. 2001-01-01)</label><br>
+    <input type="text" name="start_date"><br>
+    <label>End date: (e.g. 2011-01-01)</label><br>
+    <input type="text" name="end_date"><br><br>
+    <label>Departure airport code: </label><br>
+    <input type="text" name="departure_airport"><br>
+    <label>Arrival airport code: </label><br>
+    <input type="text" name="arrival_airport"><br><br>
+    <input type="submit" value="Search">
+</form><br>
+{% if result %}
+    <table>
+        <th>Flight number</th>
+        <th>Base price</th>
+        <th>Departure airport</th>
+        <th>Departure date</th>
+        <th>Departure time</th>
+        <th>Arrival airport</th>
+        <th>Arrival date</th>
+        <th>Arrival time</th>
+        <th>Flight status</th>
+        <th>Tickets booked</th>
+        <th>Plane ID</th>
+        <th>Airline</th>
+    {% for line in result %}
+        <tr>
+            <td>{{line['flight_number']}}</td>
+            <td>{{line['base_price']}}</td>
+            <td>{{line['departure_airport']}}</td>
+            <td>{{line['departure_date']}}</td>
+            <td>{{line['departure_time']}}</td>
+            <td>{{line['arrival_airport']}}</td>
+            <td>{{line['arrival_date']}}</td>
+            <td>{{line['arrival_time']}}</td>
+            <td>{{line['flight_status']}}</td>
+            <td>{{line['tickets_booked']}}</td>
+            <td>{{line['id']}}</td>
+            <td>{{line['airline_name']}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endif %}
+<br>
+<a href="/view_flights_staff">Back</a><br><br>
+<a href="/staff_home">Staff Home</a>
+</body>
+</html>

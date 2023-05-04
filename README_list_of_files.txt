@@ -19,9 +19,7 @@ staff_register.html: page for staffs to register
 staff_home.html: page for staff home after login/register
     view_flights_staff.html: page for staff to view flights in future 30 days, or go to following pages
         staff_search_flight.html: page for staff to search for flight depending on time periods / airports
-            staff_search_flight_result.html: page for the staff_search_flight results
         customer_in_flight.html: page for staff to search for customers in a certain flight
-            customer_in_flight_result.html: page for the customer_in_flight results
     create_new_flights.html: page for staff to create a new flight
     change_flight_status.html: page for staff to change flight status
     add_airplane.html: page for staff to add an airplane to the airline he works for
