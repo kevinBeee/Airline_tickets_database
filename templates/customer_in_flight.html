@@ -1,4 +1,3 @@
-
 <html>
 <head>
 </head>
@@ -13,12 +12,21 @@
     <input type="text" name="departure_time" required><br><br>
     <input type="submit" value="Search">
 </form>
- 
-
+{% if customers %}
+    <label><strong>Search result: </strong><label>
+    <table>
+        <th>First name</th>
+        <th>Last name</th>
+    {% for line in customers %}
+        <tr>
+            <td>{{line['first_name']}}</td>
+            <td>{{line['last_name']}}</td>
+        </tr>
+    {% endfor %}
+{% endif %}
+</table>
+<br><br>
 <a href="/staff_search_flight">Back</a><br><br>
 <a href="/staff_home">Staff Home</a>
-
 </body>
-
-
 </html>
