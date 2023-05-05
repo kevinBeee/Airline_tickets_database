@@ -94,6 +94,13 @@ def customerLoginAuth():
 	cursor.close()
 	error = None
 	if(data):
+		#set user log in status
+		cursor = conn.cursor()
+		query = "UPDATE Customer SET log_in_status='online' WHERE email='" + email + "';"
+		print(query)
+		cursor.execute(query)
+		conn.commit()
+		cursor.close()
 		#creates a session for the the user
 		#session is a built in
 		session['customer'] = email
@@ -172,11 +179,29 @@ def registerAuth():
 			cursor.execute(new_ins_lst[i])
 		conn.commit()
 		cursor.close()
+		#set user log in status
+		cursor = conn.cursor()
+		query = "UPDATE Customer SET log_in_status='online' WHERE email='" + email + "';"
+		print(query)
+		cursor.execute(query)
+		conn.commit()
+		cursor.close()
+		#add session
 		session['customer'] = email
 		return redirect(url_for('customer_home'))
+
 #customer logout
-@app.route('/logout')
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
+	email = session['customer']
+	#set user log out status
+	cursor = conn.cursor()
+	query = "UPDATE Customer SET log_in_status='offline' WHERE email='" + email + "';"
+	print(query)
+	cursor.execute(query)
+	conn.commit()
+	cursor.close()
+	#creates a session for the the user
 	session.pop('customer')
 	return redirect('/customer_login')
 
