@@ -407,6 +407,10 @@ def purchase():
 	add_to_purchase = "insert into Purchase values (%s, %s, null, null);"
 	cursor.execute(add_to_purchase, (email, id))
 	conn.commit()
+	tickets_booked += 1
+	query = "UPDATE Flight SET tickets_booked=%s"
+	cursor.execute(query, tickets_booked)
+	conn.commit()
 	cursor.close()
 	return render_template('flight_search.html', loggedin=True)
 
